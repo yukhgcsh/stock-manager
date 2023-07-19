@@ -1,0 +1,100 @@
+@page "/"
+@using MudBlazor
+@using StockManager.Core.OutputModels;
+@using StockManager.Core.Services;
+
+@inject DashboardService dashboardService
+
+<PageTitle>ダッシュボード</PageTitle>
+
+<MudStack Row="true" AlignItems="AlignItems.Start" Spacing="3">
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">元手</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudText>@(this.Capital.ToString("#,0"))円</MudText>
+        </MudCardContent>
+    </MudCard>
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">損益(トータル)</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudText>@(this.ProfitAndLoss.Total.ToString("#,0"))円</MudText>
+        </MudCardContent>
+    </MudCard>
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">損益(直近30日)</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudText>@(this.ProfitAndLoss.OneMonth.ToString("#,0"))円</MudText>
+        </MudCardContent>
+    </MudCard>
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">損益(直近180日)</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudText>@(this.ProfitAndLoss.HalfYear.ToString("#,0"))円</MudText>
+        </MudCardContent>
+    </MudCard>
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">損益(直近一年)</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudText>@(this.ProfitAndLoss.OneYear.ToString("#,0"))円</MudText>
+        </MudCardContent>
+    </MudCard>
+</MudStack>
+
+<MudDataGrid T="HoldingStock" Items="@HoldingStock" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
+    <ToolBarContent>
+        <MudText Typo="Typo.h4">保有株式</MudText>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x!.Code" Filterable="false" Title="銘柄コード" />
+        <PropertyColumn Property="x => x!.Name" Title="銘柄名" />
+        <PropertyColumn Property="x => x!.Amount" Title="数" />
+        <PropertyColumn Property="x => x!.Price" Title="単価" />
+        <PropertyColumn Property="x => x!.Date.ToShortDateString()" Title="購入日" />
+    </Columns>
+</MudDataGrid>
+
+<MudDataGrid T="SoldStock" Items="@SoldStock" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
+    <ToolBarContent>
+        <MudText Typo="Typo.h4">過去30日で売却した株式</MudText>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x!.Code" Filterable="false" Title="銘柄コード" />
+        <PropertyColumn Property="x => x!.Name" Title="銘柄名" />
+        <PropertyColumn Property="x => x!.Amount" Title="数" />
+        <PropertyColumn Property="x => x!.BoughtDate.ToShortDateString()" Title="購入日" />
+        <PropertyColumn Property="x => x!.SoldDate.ToShortDateString()" Title="売却日" />
+        <PropertyColumn Property="x => x!.Profit" Title="利益" />
+    </Columns>
+</MudDataGrid>
+
+@code {
+    int Capital = 0;
+    ProfitAndLoss ProfitAndLoss = new ProfitAndLoss();
+    IEnumerable<HoldingStock>? HoldingStock;
+    IEnumerable<SoldStock>? SoldStock;
+
+    bool IsHoldingStockLoading = true;
+    bool IsSoldStockLoading = true;
+    int HoldingStockCount = 0;
+    int SoldStockCount = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.Capital = await dashboardService.GetCapitalAsync().ConfigureAwait(false);
+        this.ProfitAndLoss = await dashboardService.GetProfitAndLossAsync().ConfigureAwait(false);
+        this.HoldingStock = await dashboardService.GetHoldingStockAsync().ConfigureAwait(false);
+        this.HoldingStockCount = this.HoldingStock.Count();
+        this.SoldStock = await dashboardService.FetchSoldStockAsync(TimeSpan.FromDays(30)).ConfigureAwait(false);
+        this.SoldStockCount = this.SoldStock.Count();
+    }
+}

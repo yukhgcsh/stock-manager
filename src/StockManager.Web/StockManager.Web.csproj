@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>35305ad5-3091-434b-a47f-51e410107cbe</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>.</DockerfileContext>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+    <PackageReference Include="MudBlazor" Version="6.7.0" />
+    <PackageReference Include="Radzen.Blazor" Version="4.13.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\StockManager.Core\StockManager.Core.csproj" />
+  </ItemGroup>
+
+</Project>
