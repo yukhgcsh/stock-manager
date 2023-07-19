@@ -1,0 +1,49 @@
+@page "/funds"
+@using Radzen.Blazor
+@using StockManager.Core.OutputModels;
+@using StockManager.Core.Services;
+
+@inject FundsService fundsService;
+
+<PageTitle>元手管理</PageTitle>
+
+<h1>元手管理</h1>
+
+<MudStack Row="true" Spacing="3">
+    <MudCard>
+        <MudCardHeader>
+            <MudText Typo="Typo.h5">元手</MudText>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudText>@(this.Capital.ToString("#,0"))円</MudText>
+        </MudCardContent>
+    </MudCard>
+</MudStack>
+
+<RadzenChart>
+    <RadzenLineSeries Smooth=false Data="@this.CapitalData" CategoryProperty="Date" Title="元手" ValueProperty="Capital">
+        <RadzenMarkers MarkerType="MarkerType.Circle" />
+        <RadzenCategoryAxis Formatter="@FormatAsDate"></RadzenCategoryAxis>
+        <RadzenValueAxis Min="0" Step="1_000_000">
+            <RadzenGridLines Visible="true" />
+            <RadzenAxisTitle Text="元手の推移"></RadzenAxisTitle>
+        </RadzenValueAxis>
+    </RadzenLineSeries>
+</RadzenChart>
+
+@code {
+    int Capital = 100;
+    IList<FundsTransition>? CapitalData;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        this.Capital = await fundsService.GetCapitalAsync();
+        this.CapitalData = await fundsService.FetchFundsTransitionsAsync();
+    }
+
+
+    string FormatAsDate(object value)
+        => ((DateTime)value).ToShortDateString();
+
+
+}

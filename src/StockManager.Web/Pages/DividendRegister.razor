@@ -1,0 +1,36 @@
+@page "/dividendRegister"
+@using StockManager.Core.InputModels;
+@using StockManager.Core.Services;
+
+@inject DividendService dividendService;
+
+<PageTitle>配当金登録</PageTitle>
+
+<h1>配当金登録</h1>
+
+<MudGrid>
+    <MudItem xs="12" sm="12">
+        <MudPaper Class="pa-4">
+            <MudForm Model="@Data" @ref="@Form" @bind-IsValid="@IsValid">
+                <MudTextField T="int" @bind-Value="Data.Code" Label="銘柄コード" Required="true" RequiredError="※必須" />
+                <MudTextField T="string" @bind-Value="Data.Name" Label="会社名" Required="true" RequiredError="※必須" />
+                <MudDatePicker @bind-Date="Date" Label="日付" Required="true" RequiredError="※必須" />
+                <MudTextField T="double" @bind-Value="Data.Profit" Label="利益" Required="true" RequiredError="※必須" />
+                <MudButton Variant="Variant.Filled" Color="Color.Primary" Disabled="@(!IsValid)" Class="ml-auto" OnClick="Register">登録</MudButton>
+            </MudForm>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
+@code {
+    DividendHistory Data = new DividendHistory();
+    bool IsValid = true;
+    MudForm? Form;
+    DateTime? Date;
+
+    private async Task Register()
+    {
+        this.Data.Date = Date!.Value;
+        await dividendService.RegisterDividendAsync(this.Data);
+    }
+}
