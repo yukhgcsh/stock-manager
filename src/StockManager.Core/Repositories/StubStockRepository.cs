@@ -2,6 +2,9 @@
 
 namespace StockManager.Core.Repositories
 {
+    /// <summary>
+    ///     <see cref="IStockRepository"/> のスタブ実装です。
+    /// </summary>
     public class StubStockRepository : IStockRepository
     {
         private IDictionary<int, IList<HoldingStockEntity>> _holdingStocks = new Dictionary<int, IList<HoldingStockEntity>>
@@ -90,6 +93,7 @@ namespace StockManager.Core.Repositories
             }
         };
 
+        /// <inheritdoc />
         public ValueTask BuyStockAsync(HoldingStockEntity entity)
         {
             if (this._holdingStocks.ContainsKey(entity.Code))
@@ -106,21 +110,25 @@ namespace StockManager.Core.Repositories
             return new ValueTask(Task.CompletedTask);
         }
 
+        /// <inheritdoc />
         public ValueTask<IEnumerable<HoldingStockEntity>> GetHoldingStocksAsync()
         {
             return new ValueTask<IEnumerable<HoldingStockEntity>>(this._holdingStocks.Values.SelectMany(x => x));
         }
 
+        /// <inheritdoc />
         public ValueTask<IEnumerable<SoldStockEntity>> GetSoldStocksAsync()
         {
             return new ValueTask<IEnumerable<SoldStockEntity>>(this._soldStocks);
         }
 
+        /// <inheritdoc />
         public ValueTask<IEnumerable<StockCodeEntity>> GetStockCodesAsync()
         {
             return new ValueTask<IEnumerable<StockCodeEntity>>(this._stockCodes.Values.ToList());
         }
 
+        /// <inheritdoc />
         public ValueTask SellStockAsync(int code, DateTime date, int amount, double price)
         {
             if (!this._holdingStocks.TryGetValue(code, out var target))
@@ -170,6 +178,7 @@ namespace StockManager.Core.Repositories
             return new ValueTask(Task.CompletedTask);
         }
 
+        /// <inheritdoc />
         public ValueTask UpsertStockCodeAsync(StockCodeEntity stockCode)
         {
             this._stockCodes[stockCode.Code] = stockCode;

@@ -5,8 +5,14 @@ using StockManager.Core.OutputModels;
 
 namespace StockManager.Core.Utils
 {
+    /// <summary>
+    ///     <see cref="IMapper"/> 用のプロファイルを構築します。
+    /// </summary>
     public class MapperProfile : Profile
     {
+        /// <summary>
+        ///     新しいインスタンスを作成します。
+        /// </summary>
         public MapperProfile()
         {
             CreateMap<HoldingStockEntity, HoldingStock>();

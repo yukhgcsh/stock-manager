@@ -3,6 +3,9 @@ using StockManager.Core.Utils;
 
 namespace StockManager.Core.Repositories
 {
+    /// <summary>
+    ///     <see cref="IStockHistoryRepository"/> のスタブ実装です。
+    /// </summary>
     public class StubStockHistoryRepository : IStockHistoryRepository
     {
         private IList<TransactionHistoryEntity> _transactions = new List<TransactionHistoryEntity>
@@ -99,22 +102,26 @@ namespace StockManager.Core.Repositories
             }
         };
 
+        /// <inheritdoc />
         public ValueTask<IEnumerable<DividendEntity>> FetchDividendAsync()
         {
             return new ValueTask<IEnumerable<DividendEntity>>(this._dividends);
         }
 
+        /// <inheritdoc />
         public ValueTask<IEnumerable<TransactionHistoryEntity>> FetchHistoryAsync()
         {
             return new ValueTask<IEnumerable<TransactionHistoryEntity>>(this._transactions);
         }
 
+        /// <inheritdoc />
         public ValueTask RegisterDividendAsync(DividendEntity dividend)
         {
             this._dividends.Add(dividend);
             return new ValueTask(Task.CompletedTask);
         }
 
+        /// <inheritdoc />
         public ValueTask RegisterTransactionAsync(TransactionHistoryEntity transaction)
         {
             this._transactions.Add(transaction);

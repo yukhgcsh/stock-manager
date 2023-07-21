@@ -3,6 +3,9 @@ using StockManager.Core.Utils;
 
 namespace StockManager.Core.Repositories
 {
+    /// <summary>
+    ///     <see cref="IFundsRepository"/> のスタブ実装です。
+    /// </summary>
     public class StubFundsRepository : IFundsRepository
     {
         private int _capital = 4_300_000;
@@ -38,16 +41,19 @@ namespace StockManager.Core.Repositories
             },
         };
 
+        /// <inheritdoc />
         public ValueTask<IList<FundsHistoryEntity>> FetchFundsHistoryAsync()
         {
             return new ValueTask<IList<FundsHistoryEntity>>(this._fundsHistories);
         }
 
+        /// <inheritdoc />
         public ValueTask<int> GetCapitalAsync()
         {
             return new ValueTask<int>(this._capital);
         }
 
+        /// <inheritdoc />
         public ValueTask<int> IncleaseCapitalAsync(FundsHistoryEntity entity)
         {
             this._capital += entity.Amount;
@@ -55,6 +61,7 @@ namespace StockManager.Core.Repositories
             return new ValueTask<int>(this._capital);
         }
 
+        /// <inheritdoc />
         public ValueTask<int> ReduceCapitalAsync(FundsHistoryEntity entity)
         {
             this._capital -= entity.Amount;

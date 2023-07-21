@@ -5,6 +5,9 @@ using StockManager.Core.Entities;
 
 namespace StockManager.Core.Services
 {
+    /// <summary>
+    ///     ダッシュボード表示に関するロジックを提供します。
+    /// </summary>
     public class DashboardService
     {
         private readonly IFundsRepository _fundsRepository;
@@ -12,6 +15,13 @@ namespace StockManager.Core.Services
         private readonly IStockRepository _stockRepository;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        ///     新しいインスタンスを作成します。
+        /// </summary>
+        /// <param name="fundsRepository">元手に関するリポジトリ。</param>
+        /// <param name="stockHistoryRepository">株式取引履歴に関するリポジトリ。</param>
+        /// <param name="stockRepository">株式に関するリポジトリ。</param>
+        /// <param name="mapper"></param>
         public DashboardService(IFundsRepository fundsRepository, IStockHistoryRepository stockHistoryRepository, IStockRepository stockRepository, IMapper mapper)
         {
             this._fundsRepository = fundsRepository;
@@ -20,11 +30,19 @@ namespace StockManager.Core.Services
             this._mapper = mapper;
         }
 
+        /// <summary>
+        ///     現在の元手の額を取得します。
+        /// </summary>
+        /// <returns>非同期処理の状態。値は現在の元手額です。</returns>
         public async ValueTask<int> GetCapitalAsync()
         {
             return await this._fundsRepository.GetCapitalAsync();
         }
 
+        /// <summary>
+        ///     現在の損益を取得します。
+        /// </summary>
+        /// <returns>非同期処理の状態。値あh現在の損益です。</returns>
         public async ValueTask<ProfitAndLoss> GetProfitAndLossAsync()
         {
             var fixledProfit = await this.GetFixedProfitAsync();
@@ -80,6 +98,10 @@ namespace StockManager.Core.Services
             return new ValueTask<ProfitAndLoss>(value);
         }
 
+        /// <summary>
+        ///     現在の保有株式の一覧を取得します。
+        /// </summary>
+        /// <returns>非同期処理の状態。値は保有株式の一覧です。</returns>
         public async ValueTask<IEnumerable<HoldingStock>> GetHoldingStockAsync()
         {
             var data = await this._stockRepository.GetHoldingStocksAsync();
@@ -100,6 +122,11 @@ namespace StockManager.Core.Services
                 });
         }
 
+        /// <summary>
+        ///     売却済み株式の一覧を取得します。
+        /// </summary>
+        /// <param name="fetchPeriod">取得する売却済み株式の期間。現在より指定した日時以内の情報を返します。未指定の場合すべての売却済み株式を返します。</param>
+        /// <returns>非同期処理の状態。値は期限内に売却した株式の一覧。</returns>
         public async ValueTask<IEnumerable<SoldStock>> FetchSoldStockAsync(TimeSpan? fetchPeriod)
         {
             var stocks = await this._stockRepository.GetSoldStocksAsync();
