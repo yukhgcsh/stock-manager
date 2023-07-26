@@ -17,4 +17,4 @@ Create TABLE IF NOT EXISTS stock_db.sold_stock
 (id int auto_increment, code int, bought_date DATE, sold_date DATE, amount int, profit int, index(id));
 
 Create TABLE IF NOT EXISTS stock_db.dividend
-(id int auto_increment, code int, date DATE, profit int, index(id));
+(id int auto_increment, code int, date DATE, amount int, profit int, index(id));

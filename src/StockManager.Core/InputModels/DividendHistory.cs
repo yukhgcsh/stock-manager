@@ -1,6 +1,4 @@
-﻿using StockManager.Core.Utils;
-
-namespace StockManager.Core.InputModels
+﻿namespace StockManager.Core.InputModels
 {
     /// <summary>
     ///     配当取得履歴に関する情報を定義します。
@@ -23,7 +21,13 @@ namespace StockManager.Core.InputModels
         public DateTime Date { get; set; }
 
         /// <summary>
+        ///     配当金対象株数を取得または設定します。
+        /// </summary>
+        public int Amount { get; set; }
+
+        /// <summary>
         ///     利益を取得または設定します。
+        ///     
         /// </summary>
         public double Profit { get; set; }
     }

@@ -25,12 +25,12 @@ namespace StockManager.Core.Repositories
         /// </summary>
         /// <param name="dividend">配当金情報。</param>
         /// <returns>非同期処理の状態。</returns>
-        ValueTask RegisterDividendAsync(DividendEntity dividend);
+        ValueTask RegisterDividendAsync(StockDividendEntity dividend);
 
         /// <summary>
         ///     配当の支給履歴を取得します。
         /// </summary>
         /// <returns>非同期処理の状態。</returns>
-        ValueTask<IEnumerable<DividendEntity>> FetchDividendAsync();
+        ValueTask<IEnumerable<StockDividendEntity>> FetchDividendAsync();
     }
 }

@@ -3,7 +3,7 @@
     /// <summary>
     ///     配当金の情報を定義します。
     /// </summary>
-    public class DividendEntity
+    public class StockDividendEntity
     {
         /// <summary>
         ///     主キー用のインデックスを取得または設定します。
@@ -22,7 +22,13 @@
         public DateTime Date { get; set; }
 
         /// <summary>
+        ///     配当金対象株数を取得または設定します。
+        /// </summary>
+        public int Amount { get; set; }
+
+        /// <summary>
         ///     配当金額を取得または設定します。
+        ///     1株あたりの単価ではなく、Amount 全体に対する合計金額です。
         /// </summary>
         public int Profit { get; set; }
     }

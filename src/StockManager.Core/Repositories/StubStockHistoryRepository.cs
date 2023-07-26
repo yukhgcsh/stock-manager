@@ -91,9 +91,9 @@ namespace StockManager.Core.Repositories
             }
         };
 
-        private IList<DividendEntity> _dividends = new List<DividendEntity>
+        private IList<StockDividendEntity> _dividends = new List<StockDividendEntity>
         {
-            new DividendEntity
+            new StockDividendEntity
             {
                 Index = 1,
                 Code = 5432,
@@ -103,9 +103,9 @@ namespace StockManager.Core.Repositories
         };
 
         /// <inheritdoc />
-        public ValueTask<IEnumerable<DividendEntity>> FetchDividendAsync()
+        public ValueTask<IEnumerable<StockDividendEntity>> FetchDividendAsync()
         {
-            return new ValueTask<IEnumerable<DividendEntity>>(this._dividends);
+            return new ValueTask<IEnumerable<StockDividendEntity>>(this._dividends);
         }
 
         /// <inheritdoc />
@@ -115,7 +115,7 @@ namespace StockManager.Core.Repositories
         }
 
         /// <inheritdoc />
-        public ValueTask RegisterDividendAsync(DividendEntity dividend)
+        public ValueTask RegisterDividendAsync(StockDividendEntity dividend)
         {
             this._dividends.Add(dividend);
             return new ValueTask(Task.CompletedTask);

@@ -18,7 +18,7 @@ namespace StockManager.Core.Utils
             CreateMap<HoldingStockEntity, HoldingStock>();
             CreateMap<SoldStockEntity, SoldStock>();
             CreateMap<StockTransaction, TransactionHistoryEntity>();
-            CreateMap<DividendHistory, DividendEntity>();
+            CreateMap<DividendHistory, StockDividendEntity>();
             CreateMap<StockTransaction, HoldingStockEntity>();
         }
     }
