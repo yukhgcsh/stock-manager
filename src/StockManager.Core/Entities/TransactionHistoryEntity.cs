@@ -29,7 +29,7 @@ namespace StockManager.Core.Entities
         public int Amount { get; set; }
 
         /// <summary>
-        ///     取引価格を取得または設定します。
+        ///     取引単価を取得または設定します。
         /// </summary>
         public double Price { get; set; }
 
