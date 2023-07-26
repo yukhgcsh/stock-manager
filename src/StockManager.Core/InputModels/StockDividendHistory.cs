@@ -3,7 +3,7 @@
     /// <summary>
     ///     配当取得履歴に関する情報を定義します。
     /// </summary>
-    public class DividendHistory
+    public class StockDividendHistory
     {
         /// <summary>
         ///     銘柄コードを取得または設定します。

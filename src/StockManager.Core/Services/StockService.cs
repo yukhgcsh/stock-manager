@@ -54,7 +54,7 @@ namespace StockManager.Core.Services
                     stockDictionary[transaction.Code] = stock;
                 }
 
-                stock.Histories.Add(this._mapper.Map<TransactionHistoryEntity, StockInfo.History>(transaction));
+                stock.Histories.Add(this._mapper.Map<StockTransactionHistoryEntity, StockInfo.History>(transaction));
             }
 
             foreach (var dividend in dividendHistory)

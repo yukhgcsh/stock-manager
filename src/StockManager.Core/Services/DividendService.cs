@@ -32,9 +32,9 @@ namespace StockManager.Core.Services
         /// </summary>
         /// <param name="dividend">配当情報。</param>
         /// <returns>非同期処理の状態。</returns>
-        public async ValueTask RegisterDividendAsync(DividendHistory dividend)
+        public async ValueTask RegisterDividendAsync(StockDividendHistory dividend)
         {
-            var entity = this._mapper.Map<DividendHistory, StockDividendEntity>(dividend);
+            var entity = this._mapper.Map<StockDividendHistory, StockDividendEntity>(dividend);
             var stockCode = new StockCodeEntity
             {
                 Code = entity.Code,

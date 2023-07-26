@@ -35,7 +35,7 @@ namespace StockManager.Core.Services
         /// <returns>非同期処理の状態。</returns>
         public async ValueTask RegisterStockTransactionAsync(StockTransaction stockTransaction)
         {
-            var historyEntity = this._mapper.Map<StockTransaction, TransactionHistoryEntity>(stockTransaction);
+            var historyEntity = this._mapper.Map<StockTransaction, StockTransactionHistoryEntity>(stockTransaction);
             var stockCode = new StockCodeEntity
             {
                 Code = historyEntity.Code,

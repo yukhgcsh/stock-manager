@@ -64,7 +64,7 @@
     </Columns>
 </MudDataGrid>
 
-<MudDataGrid T="TransactionHistory" Items="@TransactionHistory" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
+<MudDataGrid T="StockTransactionHistory" Items="@TransactionHistory" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
     <ToolBarContent>
         <MudText Typo="Typo.h4">過去30日の取引</MudText>
     </ToolBarContent>
@@ -86,7 +86,7 @@
     int Capital = 0;
     ProfitAndLoss ProfitAndLoss = new ProfitAndLoss();
     IEnumerable<HoldingStock>? HoldingStock;
-    IEnumerable<TransactionHistory>? TransactionHistory;
+    IEnumerable<StockTransactionHistory>? TransactionHistory;
 
     protected override async Task OnInitializedAsync()
     {

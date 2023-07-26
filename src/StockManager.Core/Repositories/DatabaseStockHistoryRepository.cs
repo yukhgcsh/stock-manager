@@ -13,7 +13,7 @@ namespace StockManager.Core.Repositories
             throw new NotImplementedException();
         }
 
-        public ValueTask<IEnumerable<TransactionHistoryEntity>> FetchHistoryAsync(TimeSpan? period)
+        public ValueTask<IEnumerable<StockTransactionHistoryEntity>> FetchHistoryAsync(TimeSpan? period)
         {
             throw new NotImplementedException();
         }
@@ -25,7 +25,7 @@ namespace StockManager.Core.Repositories
         }
 
         /// <inheritdoc />
-        public ValueTask RegisterTransactionAsync(TransactionHistoryEntity transaction)
+        public ValueTask RegisterTransactionAsync(StockTransactionHistoryEntity transaction)
         {
             throw new NotImplementedException();
         }

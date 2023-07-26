@@ -17,11 +17,11 @@ namespace StockManager.Core.Utils
         {
             CreateMap<HoldingStockEntity, HoldingStock>();
             CreateMap<SoldStockEntity, SoldStock>();
-            CreateMap<StockTransaction, TransactionHistoryEntity>();
-            CreateMap<TransactionHistoryEntity, TransactionHistory>();
-            CreateMap<DividendHistory, StockDividendEntity>();
+            CreateMap<StockTransaction, StockTransactionHistoryEntity>();
+            CreateMap<StockTransactionHistoryEntity, StockTransactionHistory>();
+            CreateMap<StockDividendHistory, StockDividendEntity>();
             CreateMap<StockTransaction, HoldingStockEntity>();
-            CreateMap<TransactionHistoryEntity, StockInfo.History>();
+            CreateMap<StockTransactionHistoryEntity, StockInfo.History>();
         }
     }
 }

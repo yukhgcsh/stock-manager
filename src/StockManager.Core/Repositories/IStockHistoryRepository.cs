@@ -12,14 +12,14 @@ namespace StockManager.Core.Repositories
         /// </summary>
         /// <param name="period">取得期間。</param>
         /// <returns>非同期処理の状態。値は取引履歴の一覧。</returns>
-        ValueTask<IEnumerable<TransactionHistoryEntity>> FetchHistoryAsync(TimeSpan? period);
+        ValueTask<IEnumerable<StockTransactionHistoryEntity>> FetchHistoryAsync(TimeSpan? period);
 
         /// <summary>
         ///     取引履歴を登録します。
         /// </summary>
         /// <param name="transaction">取引内容。</param>
         /// <returns>非同期処理の状態。</returns>
-        ValueTask RegisterTransactionAsync(TransactionHistoryEntity transaction);
+        ValueTask RegisterTransactionAsync(StockTransactionHistoryEntity transaction);
 
         /// <summary>
         ///     配当金の支給内容を登録します。

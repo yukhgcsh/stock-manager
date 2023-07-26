@@ -8,9 +8,9 @@ namespace StockManager.Core.Repositories
     /// </summary>
     public class StubStockHistoryRepository : IStockHistoryRepository
     {
-        private IList<TransactionHistoryEntity> _transactions = new List<TransactionHistoryEntity>
+        private IList<StockTransactionHistoryEntity> _transactions = new List<StockTransactionHistoryEntity>
         {
-            new TransactionHistoryEntity{
+            new StockTransactionHistoryEntity{
                 Index = 0,
                 Code = 1234,
                 Amount = 200,
@@ -19,7 +19,7 @@ namespace StockManager.Core.Repositories
                 Price = 1000,
                 Type = TransactionType.Buy
             },
-            new TransactionHistoryEntity
+            new StockTransactionHistoryEntity
             {
                 Index = 1,
                 Code = 1234,
@@ -29,7 +29,7 @@ namespace StockManager.Core.Repositories
                 Type = TransactionType.Sell,
                 Memo = "利確のため半分売却"
             },
-            new TransactionHistoryEntity
+            new StockTransactionHistoryEntity
             {
                 Index = 2,
                 Code = 5678,
@@ -39,7 +39,7 @@ namespace StockManager.Core.Repositories
                 Type = TransactionType.Buy,
                 Price = 600
             },
-            new TransactionHistoryEntity
+            new StockTransactionHistoryEntity
             {
                 Index = 3,
                 Code = 9876,
@@ -49,7 +49,7 @@ namespace StockManager.Core.Repositories
                 Type = TransactionType.Buy,
                 Price = 400
             },
-            new TransactionHistoryEntity
+            new StockTransactionHistoryEntity
             {
                 Index = 4,
                 Code = 5432,
@@ -59,7 +59,7 @@ namespace StockManager.Core.Repositories
                 Price= 1200,
                 Type = TransactionType.Buy,
             },
-            new TransactionHistoryEntity
+            new StockTransactionHistoryEntity
             {
                 Index = 5,
                 Code = 5678,
@@ -69,7 +69,7 @@ namespace StockManager.Core.Repositories
                 Price = 630,
                 Type = TransactionType.Sell,
             },
-            new TransactionHistoryEntity
+            new StockTransactionHistoryEntity
             {
                 Index = 6,
                 Code = 9876,
@@ -79,7 +79,7 @@ namespace StockManager.Core.Repositories
                 Price = 395,
                 Type = TransactionType.Sell
             },
-            new TransactionHistoryEntity
+            new StockTransactionHistoryEntity
             {
                 Index = 7,
                 Code = 5432,
@@ -109,16 +109,16 @@ namespace StockManager.Core.Repositories
         }
 
         /// <inheritdoc />
-        public ValueTask<IEnumerable<TransactionHistoryEntity>> FetchHistoryAsync(TimeSpan? fetchPeriod)
+        public ValueTask<IEnumerable<StockTransactionHistoryEntity>> FetchHistoryAsync(TimeSpan? fetchPeriod)
         {
             var now = DateTime.Now;
             if (fetchPeriod == null)
             {
-                return new ValueTask<IEnumerable<TransactionHistoryEntity>>(this._transactions);
+                return new ValueTask<IEnumerable<StockTransactionHistoryEntity>>(this._transactions);
             }
             else
             {
-                return new ValueTask<IEnumerable<TransactionHistoryEntity>>(this._transactions.Where(x => now - x.Date <= fetchPeriod));
+                return new ValueTask<IEnumerable<StockTransactionHistoryEntity>>(this._transactions.Where(x => now - x.Date <= fetchPeriod));
             }
         }
 
@@ -130,7 +130,7 @@ namespace StockManager.Core.Repositories
         }
 
         /// <inheritdoc />
-        public ValueTask RegisterTransactionAsync(TransactionHistoryEntity transaction)
+        public ValueTask RegisterTransactionAsync(StockTransactionHistoryEntity transaction)
         {
             this._transactions.Add(transaction);
             return new ValueTask(Task.CompletedTask);

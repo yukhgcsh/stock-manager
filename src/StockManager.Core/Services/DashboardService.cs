@@ -127,14 +127,14 @@ namespace StockManager.Core.Services
         /// </summary>
         /// <param name="fetchPeriod">取得する取引履歴の期間。現在より指定した日時以内の情報を返します。未指定の場合すべての取引履歴を返します。</param>
         /// <returns>非同期処理の状態。値は期限内の取引の一覧。</returns>
-        public async ValueTask<IEnumerable<TransactionHistory>> FetchTransactionHistoryAsync(TimeSpan? fetchPeriod)
+        public async ValueTask<IEnumerable<StockTransactionHistory>> FetchTransactionHistoryAsync(TimeSpan? fetchPeriod)
         {
             var transactions = await this._stockHistoryRepository.FetchHistoryAsync(fetchPeriod);
             var stockCodes = await this._stockRepository.GetStockCodesAsync();
             var stockCodeDictionary = stockCodes.ToDictionary(x => x.Code, x => x.Name);
             return transactions.Select(x =>
                 {
-                    var stock = this._mapper.Map<TransactionHistoryEntity, TransactionHistory>(x);
+                    var stock = this._mapper.Map<StockTransactionHistoryEntity, StockTransactionHistory>(x);
                     if (stockCodeDictionary.TryGetValue(stock.Code, out var name))
                     {
                         stock.Name = name;

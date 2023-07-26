@@ -2,7 +2,7 @@
 
 namespace StockManager.Core.OutputModels
 {
-    public class TransactionHistory
+    public class StockTransactionHistory
     {
         public int Code { get; set; }
 
