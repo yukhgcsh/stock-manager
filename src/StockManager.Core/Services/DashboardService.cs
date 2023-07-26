@@ -123,52 +123,29 @@ namespace StockManager.Core.Services
         }
 
         /// <summary>
-        ///     売却済み株式の一覧を取得します。
+        ///     指定した期間の取引履歴の一覧を取得します。
         /// </summary>
-        /// <param name="fetchPeriod">取得する売却済み株式の期間。現在より指定した日時以内の情報を返します。未指定の場合すべての売却済み株式を返します。</param>
-        /// <returns>非同期処理の状態。値は期限内に売却した株式の一覧。</returns>
-        public async ValueTask<IEnumerable<SoldStock>> FetchSoldStockAsync(TimeSpan? fetchPeriod)
+        /// <param name="fetchPeriod">取得する取引履歴の期間。現在より指定した日時以内の情報を返します。未指定の場合すべての取引履歴を返します。</param>
+        /// <returns>非同期処理の状態。値は期限内の取引の一覧。</returns>
+        public async ValueTask<IEnumerable<TransactionHistory>> FetchTransactionHistoryAsync(TimeSpan? fetchPeriod)
         {
-            var stocks = await this._stockRepository.GetSoldStocksAsync();
+            var transactions = await this._stockHistoryRepository.FetchHistoryAsync(fetchPeriod);
             var stockCodes = await this._stockRepository.GetStockCodesAsync();
             var stockCodeDictionary = stockCodes.ToDictionary(x => x.Code, x => x.Name);
-            if (fetchPeriod == null)
-            {
-                return stocks.Select(x =>
+            return transactions.Select(x =>
+                {
+                    var stock = this._mapper.Map<TransactionHistoryEntity, TransactionHistory>(x);
+                    if (stockCodeDictionary.TryGetValue(stock.Code, out var name))
                     {
-                        var stock = this._mapper.Map<SoldStockEntity, SoldStock>(x);
-                        if (stockCodeDictionary.TryGetValue(stock.Code, out var name))
-                        {
-                            stock.Name = name;
-                        }
-                        else
-                        {
-                            stock.Name = "Unknown";
-                        }
-                        return stock;
+                        stock.Name = name;
                     }
-                );
-            }
-            else
-            {
-                var now = DateTime.Now;
-                return stocks
-                    .Where(x => now - x.SoldDate < fetchPeriod)
-                    .Select(x =>
+                    else
                     {
-                        var stock = this._mapper.Map<SoldStockEntity, SoldStock>(x);
-                        if (stockCodeDictionary.TryGetValue(stock.Code, out var name))
-                        {
-                            stock.Name = name;
-                        }
-                        else
-                        {
-                            stock.Name = "Unknown";
-                        }
-                        return stock;
+                        stock.Name = "Unknown";
                     }
-                );
-            }
+                    return stock;
+                }
+            );
         }
     }
 }

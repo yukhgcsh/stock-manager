@@ -109,9 +109,17 @@ namespace StockManager.Core.Repositories
         }
 
         /// <inheritdoc />
-        public ValueTask<IEnumerable<TransactionHistoryEntity>> FetchHistoryAsync()
+        public ValueTask<IEnumerable<TransactionHistoryEntity>> FetchHistoryAsync(TimeSpan? fetchPeriod)
         {
-            return new ValueTask<IEnumerable<TransactionHistoryEntity>>(this._transactions);
+            var now = DateTime.Now;
+            if (fetchPeriod == null)
+            {
+                return new ValueTask<IEnumerable<TransactionHistoryEntity>>(this._transactions);
+            }
+            else
+            {
+                return new ValueTask<IEnumerable<TransactionHistoryEntity>>(this._transactions.Where(x => now - x.Date <= fetchPeriod));
+            }
         }
 
         /// <inheritdoc />
