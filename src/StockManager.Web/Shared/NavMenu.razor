@@ -20,24 +20,42 @@
             </NavLink>
         </div>
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="transactionRegister">
-                <span class="oi oi-plus" aria-hidden="true"></span> 売買履歴
+            <NavLink class="nav-link" @onclick="ToggleStockNavMenu">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> 株式
             </NavLink>
         </div>
+        @if (stockCollapseMenu)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="stocks">
+                    <span class="oi oi-plus" aria-hidden="true"></span> 株式情報
+                </NavLink>
+            </div>
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="featuredStock">
+                    <span class="oi oi-eye" aria-hidden="true"></span> 注目銘柄
+                </NavLink>
+            </div>
+        }
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="dividendRegister">
-                <span class="oi oi-plus" aria-hidden="true"></span> 配当金登録
+            <NavLink class="nav-link" @onclick="ToggleInvestmentTrustNavMenu">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> 投資信託
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="featuredStock">
-                <span class="oi oi-eye" aria-hidden="true"></span> 注目銘柄
-            </NavLink>
-        </div>
+        @if (investimentTrustCollapseMenu)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="investmentTrust">
+                    <span class="oi oi-plus" aria-hidden="true"></span> 投資信託
+                </NavLink>
+            </div>
+        }
     </nav>
 </div>
 
 @code {
+    private bool stockCollapseMenu = false;
+    private bool investimentTrustCollapseMenu = false;
     private bool collapseNavMenu = true;
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
@@ -45,5 +63,15 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void ToggleStockNavMenu()
+    {
+        stockCollapseMenu = !stockCollapseMenu;
+    }
+
+    private void ToggleInvestmentTrustNavMenu()
+    {
+        investimentTrustCollapseMenu = !investimentTrustCollapseMenu;
     }
 }
