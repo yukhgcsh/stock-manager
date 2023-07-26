@@ -1,0 +1,51 @@
+﻿@using StockManager.Core.OutputModels;
+@using StockManager.Core.Utils;
+
+<MudDialog>
+    <DialogContent>
+        <MudDataGrid T="StockInfo.History" Items="@StockInfo.Histories.OrderByDescending(x => x.Date)" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow" SortMode="SortMode.Single">
+            <Columns>
+                <PropertyColumn Property="x => GetActionType(x.Type)" />
+                <PropertyColumn Property="x => x!.Date" Title="取引日" />
+                <PropertyColumn Property="x => x!.Price" Title="価格" />
+                <PropertyColumn Property="x => x!.Amount" Title="数量" />
+                <PropertyColumn Property="x => x!.Commission" Title="手数料" />
+                <PropertyColumn Property="x => x!.Memo" Title="メモ" />
+            </Columns>
+        </MudDataGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Close">閉じる</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    const string Buy = "購入";
+    const string Sell = "売却";
+
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+    [Parameter]
+    public StockInfo StockInfo { get; set; } = null!;
+
+    private string GetActionType(StockActionType type)
+    {
+        if (type == StockActionType.Buy)
+        {
+            return "購入";
+        }
+        else if (type == StockActionType.Sell)
+        {
+            return "売却";
+        }
+        else
+        {
+            return "配当";
+        }
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+}

@@ -1,0 +1,128 @@
+﻿@page "/stocks"
+@using StockManager.Core.OutputModels;
+@using StockManager.Core.Services;
+@using StockManager.Core.Utils;
+
+@inject StockService stockService;
+@inject IDialogService dialogService;
+
+
+<MudButton @onclick="OpenTransactionRegister" Variant="Variant.Outlined" Color="Color.Info">
+    株式売買登録
+</MudButton>
+<MudButton @onclick="OpenDividendRegister" Variant="Variant.Outlined" Color="Color.Info">
+    配当登録
+</MudButton>
+<MudDataGrid T="StockInfo" Items="@Stocks" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
+    <ToolBarContent>
+        <MudText Typo="Typo.h4">証券一覧</MudText>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x!.Code" Filterable="false" Title="銘柄コード" />
+        <PropertyColumn Property="x => x!.Name" Title="銘柄名" />
+        <PropertyColumn Property="x => GetStockAmount(x!)" Title="保有株数"></PropertyColumn>
+        <PropertyColumn Property="x => GetProfit(x!)" Title="損益(株式/配当)" />
+        <TemplateColumn>
+            <CellTemplate>
+                <MudButton @onclick="() => OpenTransactionHistory(context.Item!)" Variant="Variant.Filled" Color="Color.Primary">
+                    取引履歴
+                </MudButton>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+
+
+
+
+@code {
+    IList<StockInfo>? Stocks;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.Stocks = await stockService.GetStocksAsync();
+    }
+
+    private async Task OpenTransactionRegister()
+    {
+        var options = new DialogOptions
+            {
+                CloseOnEscapeKey = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Medium
+            };
+        var result = await dialogService.Show<TransactionRegisterDialog>("株式売買登録", options).Result;
+        if (result.Data is bool boolResult && boolResult)
+        {
+            this.Stocks = await stockService.GetStocksAsync();
+        }
+    }
+
+    private async Task OpenDividendRegister()
+    {
+        var options = new DialogOptions
+            {
+                CloseOnEscapeKey = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Medium
+            };
+        var result = await dialogService.Show<DividendRegisterDialog>("配当金登録", options).Result;
+        if (result.Data is bool boolResult && boolResult)
+        {
+            this.Stocks = await stockService.GetStocksAsync();
+        }
+    }
+
+    private void OpenTransactionHistory(StockInfo info)
+    {
+        var options = new DialogOptions
+            {
+                CloseOnEscapeKey = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Large
+            };
+        var parameter = new DialogParameters<StockTransactionHistoryDialog>
+        {
+            {
+                x => x.StockInfo,
+                info
+            }
+        };
+        dialogService.Show<StockTransactionHistoryDialog>($"{info.Name}({info.Code})", parameter, options);
+    }
+
+    private string GetStockAmount(StockInfo info)
+    {
+        var currentAmount = info.Histories.Sum(x =>
+            {
+                if (x.Type == StockActionType.Buy)
+                {
+                    return x.Amount;
+                }
+                else if (x.Type == StockActionType.Sell)
+                {
+                    return -1 * x.Amount;
+                }
+                else
+                {
+                    return 0;
+                }
+            });
+
+        if (currentAmount != 0)
+        {
+            return $"{currentAmount} 株保有";
+        }
+        else
+        {
+            return "全株売却済み";
+        }
+    }
+
+    private string GetProfit(StockInfo info)
+    {
+        var total = info.StockProfit + info.DividendProfit;
+        return $"{total.ToString("#,0")}({info.StockProfit.ToString("#,0")}/{info.DividendProfit.ToString("#,0")})";
+    }
+}
