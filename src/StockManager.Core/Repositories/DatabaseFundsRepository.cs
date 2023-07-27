@@ -20,7 +20,7 @@ namespace StockManager.Core.Repositories
         }
 
         /// <inheritdoc />
-        public ValueTask<int> IncleaseCapitalAsync(FundsHistoryEntity entity)
+        public ValueTask<int> IncreaseCapitalAsync(FundsHistoryEntity entity)
         {
             throw new NotImplementedException();
         }

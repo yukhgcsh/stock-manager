@@ -22,7 +22,7 @@ namespace StockManager.Core.Services
         /// <summary>
         ///     現在の元手の額を取得します。
         /// </summary>
-        /// <returns>非同期処理の状態。値あｈ現在の元手の額です。</returns>
+        /// <returns>非同期処理の状態。値は現在の元手の額です。</returns>
         public async ValueTask<int> GetCapitalAsync()
         {
             return await this._fundsRepository.GetCapitalAsync();

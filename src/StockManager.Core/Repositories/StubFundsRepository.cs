@@ -54,7 +54,7 @@ namespace StockManager.Core.Repositories
         }
 
         /// <inheritdoc />
-        public ValueTask<int> IncleaseCapitalAsync(FundsHistoryEntity entity)
+        public ValueTask<int> IncreaseCapitalAsync(FundsHistoryEntity entity)
         {
             this._capital += entity.Amount;
             this._fundsHistories.Add(entity);

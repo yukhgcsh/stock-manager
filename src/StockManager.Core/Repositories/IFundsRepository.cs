@@ -24,7 +24,7 @@ namespace StockManager.Core.Repositories
         /// </summary>
         /// <param name="entity">元手の増加量。</param>
         /// <returns>非同期処理の状態。値は更新後の元手の額です。</returns>
-        ValueTask<int> IncleaseCapitalAsync(FundsHistoryEntity entity);
+        ValueTask<int> IncreaseCapitalAsync(FundsHistoryEntity entity);
 
         /// <summary>
         ///     元手を減らします。
