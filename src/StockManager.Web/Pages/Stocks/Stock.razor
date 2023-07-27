@@ -20,7 +20,7 @@
     <Columns>
         <PropertyColumn Property="x => x!.Code" Filterable="false" Title="銘柄コード" />
         <PropertyColumn Property="x => x!.Name" Title="銘柄名" />
-        <PropertyColumn Property="x => GetStockAmount(x!)" Title="保有株数"></PropertyColumn>
+        <PropertyColumn Property="x => GetStockQuantity(x!)" Title="保有株数"></PropertyColumn>
         <PropertyColumn Property="x => GetProfit(x!)" Title="損益(株式/配当)" />
         <TemplateColumn>
             <CellTemplate>
@@ -31,10 +31,6 @@
         </TemplateColumn>
     </Columns>
 </MudDataGrid>
-
-
-
-
 
 @code {
     IList<StockInfo>? Stocks;
@@ -92,17 +88,17 @@
         dialogService.Show<StockTransactionHistoryDialog>($"{info.Name}({info.Code})", parameter, options);
     }
 
-    private string GetStockAmount(StockInfo info)
+    private string GetStockQuantity(StockInfo info)
     {
-        var currentAmount = info.Histories.Sum(x =>
+        var currentQuantity = info.Histories.Sum(x =>
             {
-                if (x.Type == StockActionType.Buy)
+                if (x.Type == TransactionType.Buy)
                 {
-                    return x.Amount;
+                    return x.Quantity;
                 }
-                else if (x.Type == StockActionType.Sell)
+                else if (x.Type == TransactionType.Sell)
                 {
-                    return -1 * x.Amount;
+                    return -1 * x.Quantity;
                 }
                 else
                 {
@@ -110,9 +106,9 @@
                 }
             });
 
-        if (currentAmount != 0)
+        if (currentQuantity != 0)
         {
-            return $"{currentAmount} 株保有";
+            return $"{currentQuantity} 株保有";
         }
         else
         {

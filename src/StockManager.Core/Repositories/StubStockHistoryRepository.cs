@@ -13,19 +13,19 @@ namespace StockManager.Core.Repositories
             new StockTransactionHistoryEntity{
                 Index = 0,
                 Code = 1234,
-                Amount = 200,
+                Quantity = 200,
                 Date = new DateTime(2022, 1, 2),
                 Memo = "購入",
-                Price = 1000,
+                Amount = 1000,
                 Type = TransactionType.Buy
             },
             new StockTransactionHistoryEntity
             {
                 Index = 1,
                 Code = 1234,
-                Amount = 100,
+                Quantity = 100,
                 Date = new DateTime(2022, 1, 4),
-                Price = 1100,
+                Amount = 1100,
                 Type = TransactionType.Sell,
                 Memo = "利確のため半分売却"
             },
@@ -33,80 +33,73 @@ namespace StockManager.Core.Repositories
             {
                 Index = 2,
                 Code = 5678,
-                Amount = 300,
+                Quantity = 300,
                 Date = new DateTime(2022, 10 ,1),
                 Memo = "購入",
                 Type = TransactionType.Buy,
-                Price = 600
+                Amount = 600
             },
             new StockTransactionHistoryEntity
             {
                 Index = 3,
                 Code = 9876,
-                Amount = 400,
+                Quantity = 400,
                 Date = new DateTime(2022, 10, 1),
                 Memo = "購入",
                 Type = TransactionType.Buy,
-                Price = 400
+                Amount = 400
             },
             new StockTransactionHistoryEntity
             {
                 Index = 4,
                 Code = 5432,
-                Amount = 200,
+                Quantity = 200,
                 Date = new DateTime(2022, 10, 1),
                 Memo = "購入",
-                Price= 1200,
+                Amount= 1200,
                 Type = TransactionType.Buy,
             },
             new StockTransactionHistoryEntity
             {
                 Index = 5,
                 Code = 5678,
-                Amount = 300,
+                Quantity = 300,
                 Date = new DateTime(2022, 12, 3),
                 Memo = "利確のため全部売却",
-                Price = 630,
+                Amount = 630,
                 Type = TransactionType.Sell,
             },
             new StockTransactionHistoryEntity
             {
                 Index = 6,
                 Code = 9876,
-                Amount = 400,
+                Quantity = 400,
                 Date = new DateTime(2023, 3, 3),
                 Memo = "損切のため売却",
-                Price = 395,
+                Amount = 395,
                 Type = TransactionType.Sell
             },
             new StockTransactionHistoryEntity
             {
                 Index = 7,
                 Code = 5432,
-                Amount = 200,
+                Date = new DateTime(2023, 3, 28),
+                Amount = 3000,
+                Memo = "-",
+                Quantity = 200,
+                Type = TransactionType.Dividend
+            },
+            new StockTransactionHistoryEntity
+            {
+                Index = 8,
+                Code = 5432,
+                Quantity = 200,
                 Date = new DateTime(2023, 6, 27),
                 Memo = "利確のため売却",
                 Type= TransactionType.Sell,
-                Price = 1260
+                Amount = 1260
             }
         };
-
-        private IList<StockDividendEntity> _dividends = new List<StockDividendEntity>
-        {
-            new StockDividendEntity
-            {
-                Index = 1,
-                Code = 5432,
-                Date = new DateTime(2023, 3, 28),
-                Profit = 3000
-            }
-        };
-
-        /// <inheritdoc />
-        public ValueTask<IEnumerable<StockDividendEntity>> FetchDividendAsync()
-        {
-            return new ValueTask<IEnumerable<StockDividendEntity>>(this._dividends);
-        }
 
         /// <inheritdoc />
         public ValueTask<IEnumerable<StockTransactionHistoryEntity>> FetchHistoryAsync(TimeSpan? fetchPeriod)
@@ -120,13 +113,6 @@ namespace StockManager.Core.Repositories
             {
                 return new ValueTask<IEnumerable<StockTransactionHistoryEntity>>(this._transactions.Where(x => now - x.Date <= fetchPeriod));
             }
-        }
-
-        /// <inheritdoc />
-        public ValueTask RegisterDividendAsync(StockDividendEntity dividend)
-        {
-            this._dividends.Add(dividend);
-            return new ValueTask(Task.CompletedTask);
         }
 
         /// <inheritdoc />

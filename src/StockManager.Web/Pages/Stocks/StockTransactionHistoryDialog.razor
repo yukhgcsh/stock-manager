@@ -7,8 +7,8 @@
             <Columns>
                 <PropertyColumn Property="x => GetActionType(x.Type)" />
                 <PropertyColumn Property="x => x!.Date" Title="取引日" />
-                <PropertyColumn Property="x => x!.Price" Title="価格" />
-                <PropertyColumn Property="x => x!.Amount" Title="数量" />
+                <PropertyColumn Property="x => x!.Amount" Title="価格" />
+                <PropertyColumn Property="x => x!.Quantity" Title="数量" />
                 <PropertyColumn Property="x => x!.Commission" Title="手数料" />
                 <PropertyColumn Property="x => x!.Memo" Title="メモ" />
             </Columns>
@@ -28,13 +28,13 @@
     [Parameter]
     public StockInfo StockInfo { get; set; } = null!;
 
-    private string GetActionType(StockActionType type)
+    private string GetActionType(TransactionType type)
     {
-        if (type == StockActionType.Buy)
+        if (type == TransactionType.Buy)
         {
             return "購入";
         }
-        else if (type == StockActionType.Sell)
+        else if (type == TransactionType.Sell)
         {
             return "売却";
         }

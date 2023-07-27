@@ -13,10 +13,10 @@ namespace StockManager.Core.Repositories
                 1234,
                 new List<HoldingStockEntity>{
                     new HoldingStockEntity{
-                        Amount = 100,
+                        Quantity = 100,
                         Code = 1234,
                         Date = new DateTime(2022, 1, 2),
-                        Price = 1000,
+                        Amount = 1000,
                     }
                 }
             }
@@ -25,7 +25,7 @@ namespace StockManager.Core.Repositories
         private IList<SoldStockEntity> _soldStocks = new List<SoldStockEntity> {
             new SoldStockEntity
             {
-                Amount = 100,
+                Quantity = 100,
                 Code = 1234,
                 BoughtDate = new DateTime(2022, 1, 2),
                 SoldDate = new DateTime(2022, 1, 4),
@@ -33,7 +33,7 @@ namespace StockManager.Core.Repositories
             },
             new SoldStockEntity
             {
-                Amount = 300,
+                Quantity = 300,
                 Code = 5678,
                 BoughtDate = new DateTime(2022, 10, 1),
                 SoldDate = new DateTime(2022, 12, 3),
@@ -41,7 +41,7 @@ namespace StockManager.Core.Repositories
             },
             new SoldStockEntity
             {
-                Amount = 400,
+                Quantity = 400,
                 Code = 9876,
                 BoughtDate = new DateTime(2022, 10, 1),
                 SoldDate = new DateTime(2023, 3, 3),
@@ -49,7 +49,7 @@ namespace StockManager.Core.Repositories
             },
             new SoldStockEntity
             {
-                Amount = 200,
+                Quantity = 200,
                 Code = 5432,
                 BoughtDate = new DateTime(2022, 10, 1),
                 SoldDate = new DateTime(2023, 6, 27),
@@ -129,7 +129,7 @@ namespace StockManager.Core.Repositories
         }
 
         /// <inheritdoc />
-        public ValueTask SellStockAsync(int code, DateTime date, int amount, double price)
+        public ValueTask SellStockAsync(int code, DateTime date, int quantity, double amount)
         {
             if (!this._holdingStocks.TryGetValue(code, out var target))
             {
@@ -137,26 +137,26 @@ namespace StockManager.Core.Repositories
             }
 
 
-            var restAmount = amount;
+            var restQuantity = quantity;
             foreach (var transaction in target.OrderBy(x => x.Date))
             {
-                if (restAmount == 0)
+                if (restQuantity == 0)
                 {
                     break;
                 }
 
-                if (transaction.Amount <= restAmount)
+                if (transaction.Quantity <= restQuantity)
                 {
                     var entity = new SoldStockEntity
                     {
                         Code = code,
-                        Amount = transaction.Amount,
+                        Quantity = transaction.Quantity,
                         BoughtDate = transaction.Date,
-                        Profit = (int)(transaction.Price - price) * transaction.Amount,
+                        Profit = (int)(transaction.Amount - amount) * transaction.Quantity,
                         SoldDate = date
                     };
                     this._soldStocks.Add(entity);
-                    restAmount -= transaction.Amount;
+                    restQuantity -= transaction.Quantity;
                     target.Remove(transaction);
                 }
                 else
@@ -164,14 +164,14 @@ namespace StockManager.Core.Repositories
                     var entity = new SoldStockEntity
                     {
                         Code = code,
-                        Amount = restAmount,
+                        Quantity = restQuantity,
                         BoughtDate = transaction.Date,
-                        Profit = (int)(transaction.Price - price) * restAmount,
+                        Profit = (int)(transaction.Amount - amount) * restQuantity,
                         SoldDate = date
                     };
                     this._soldStocks.Add(entity);
-                    transaction.Amount -= restAmount;
-                    restAmount = 0;
+                    transaction.Quantity -= restQuantity;
+                    restQuantity = 0;
                 }
             }
 

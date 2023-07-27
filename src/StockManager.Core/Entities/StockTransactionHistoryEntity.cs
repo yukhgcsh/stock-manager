@@ -5,7 +5,7 @@ namespace StockManager.Core.Entities
     /// <summary>
     ///     取引履歴情報を定義します。
     /// </summary>
-    public class TransactionHistoryEntity
+    public class StockTransactionHistoryEntity
     {
         /// <summary>
         ///     主キー用のインデックスを取得または設定します。
@@ -26,12 +26,12 @@ namespace StockManager.Core.Entities
         /// <summary>
         ///     取引株数を取得または設定します。
         /// </summary>
-        public int Amount { get; set; }
+        public int Quantity { get; set; }
 
         /// <summary>
-        ///     取引単価を取得または設定します。
+        ///     株式の売買の場合は単価、配当の場合は合計額を取得または設定します。
         /// </summary>
-        public double Price { get; set; }
+        public double Amount { get; set; }
 
         /// <summary>
         ///     取引タイプを取得または設定します。

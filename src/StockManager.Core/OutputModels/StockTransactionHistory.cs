@@ -14,9 +14,9 @@ namespace StockManager.Core.OutputModels
 
         public DateTime Date { get; set; }
 
-        public double Price { get; set; }
+        public double Amount { get; set; }
 
-        public int Amount { get; set; }
+        public int Quantity { get; set; }
 
         public int Commission { get; set; } 
     }

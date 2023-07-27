@@ -28,7 +28,7 @@
         /// <summary>
         ///     売却株数を取得または設定します。
         /// </summary>
-        public int Amount { get; set; }
+        public int Quantity { get; set; }
 
         /// <summary>
         ///     損益を取得または設定します。

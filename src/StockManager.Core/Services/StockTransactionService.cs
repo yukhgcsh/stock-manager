@@ -55,7 +55,7 @@ namespace StockManager.Core.Services
             }
             else if (stockTransaction.Type == TransactionType.Sell)
             {
-                waitTaskList.Add(this._stockRepository.SellStockAsync(stockTransaction.Code, stockTransaction.Date, stockTransaction.Amount, stockTransaction.Price).AsTask());
+                waitTaskList.Add(this._stockRepository.SellStockAsync(stockTransaction.Code, stockTransaction.Date, stockTransaction.Quantity, stockTransaction.Amount).AsTask());
             }
 
             await Task.WhenAll(waitTaskList);

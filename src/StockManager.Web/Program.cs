@@ -19,7 +19,6 @@ namespace StockManager.Web
             builder.Services.AddSingleton<FundsService>();
             builder.Services.AddSingleton<StockService>();
             builder.Services.AddSingleton<StockTransactionService>();
-            builder.Services.AddSingleton<DividendService>();
             builder.Services.AddSingleton<IFundsRepository, DatabaseFundsRepository>();
             builder.Services.AddSingleton<IStockHistoryRepository, DatabaseStockHistoryRepository>();
             builder.Services.AddSingleton<IStockRepository, DatabaseStockRepository>();

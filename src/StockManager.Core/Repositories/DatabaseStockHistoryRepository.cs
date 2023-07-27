@@ -7,19 +7,7 @@ namespace StockManager.Core.Repositories
     /// </summary>
     public class DatabaseStockHistoryRepository : IStockHistoryRepository
     {
-        /// <inheritdoc />
-        public ValueTask<IEnumerable<StockDividendEntity>> FetchDividendAsync()
-        {
-            throw new NotImplementedException();
-        }
-
         public ValueTask<IEnumerable<StockTransactionHistoryEntity>> FetchHistoryAsync(TimeSpan? period)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <inheritdoc />
-        public ValueTask RegisterDividendAsync(StockDividendEntity dividend)
         {
             throw new NotImplementedException();
         }

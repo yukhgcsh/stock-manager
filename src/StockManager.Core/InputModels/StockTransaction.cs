@@ -3,43 +3,43 @@ using StockManager.Core.Utils;
 namespace StockManager.Core.InputModels
 {
     /// <summary>
-    ///     Š”®‚Ìæˆøî•ñ‚ğ’è‹`‚µ‚Ü‚·B
+    ///     æ ªå¼ã®å–å¼•æƒ…å ±(è³¼å…¥ã€å£²å´ã€é…å½“)ã‚’å®šç¾©ã—ã¾ã™ã€‚
     /// </summary>
     public class StockTransaction
     {
         /// <summary>
-        ///     –Á•¿ƒR[ƒh‚ğæ“¾‚Ü‚½‚Íİ’è‚µ‚Ü‚·B
+        ///     éŠ˜æŸ„ã‚³ãƒ¼ãƒ‰ã‚’å–å¾—ã¾ãŸã¯è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
         public int Code { get; set; }
 
         /// <summary>
-        ///     ‰ïĞ–¼‚ğæ“¾‚Ü‚½‚Íİ’è‚µ‚Ü‚·B
+        ///     ä¼šç¤¾åã‚’å–å¾—ã¾ãŸã¯è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
         public string Name { get; set; } = null!;
 
         /// <summary>
-        ///     æˆøŠ””‚ğæ“¾‚Ü‚½‚Íİ’è‚µ‚Ü‚·B
+        ///     å–å¼•æ ªæ•°ã‚’å–å¾—ã¾ãŸã¯è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
-        public int Amount { get; set; }
+        public int Quantity { get; set; }
 
         /// <summary>
-        ///     ƒƒ‚‚ğæ“¾‚Ü‚½‚Íİ’è‚µ‚Ü‚·B
+        ///     ãƒ¡ãƒ¢ã‚’å–å¾—ã¾ãŸã¯è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
         public string? Memo { get; set; }
 
         /// <summary>
-        ///     æˆø“ú•t‚ğæ“¾‚Ü‚½‚Íİ’è‚µ‚Ü‚·B
+        ///     å–å¼•æ—¥ä»˜ã‚’å–å¾—ã¾ãŸã¯è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
         public DateTime Date { get; set; }
 
         /// <summary>
-        ///     æˆøƒ^ƒCƒv‚ğæ“¾‚Ü‚½‚Íİ’è‚µ‚Ü‚·B
+        ///     å–å¼•ã‚¿ã‚¤ãƒ—ã‚’å–å¾—ã¾ãŸã¯è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
         public TransactionType Type { get; set; }
 
         /// <summary>
-        ///     æˆø‰¿Ši‚ğæ“¾‚Ü‚½‚Íİ’è‚µ‚Ü‚·B
+        ///     æ ªå¼ã®å£²è²·ã®å ´åˆã¯å˜ä¾¡ã€é…å½“ã®å ´åˆã¯åˆè¨ˆé¡ã‚’å–å¾—ã¾ãŸã¯è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
-        public double Price { get; set; }
+        public double Amount { get; set; }
     }
 }

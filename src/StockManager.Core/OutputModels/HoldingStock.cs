@@ -20,11 +20,11 @@
         /// <summary>
         ///     所有株数を取得または設定します。
         /// </summary>
-        public int Amount { get; set; }
+        public int Quantity { get; set; }
 
         /// <summary>
         ///     取得株の単価を取得または設定します。
         /// </summary>
-        public double Price { get; set; }
+        public double Amount { get; set; }
     }
 }

@@ -37,7 +37,6 @@ namespace StockManager.Core.Services
             var stockCodes = await this._stockRepository.GetStockCodesAsync();
             var stockCodeDictionary = stockCodes.ToDictionary(x => x.Code, x => x.Name);
             var transactionHistory = await this._stockHistoryRepository.FetchHistoryAsync(period: null);
-            var dividendHistory = await this._stockHistoryRepository.FetchDividendAsync();
             var holdingStock = await this._stockRepository.GetHoldingStocksAsync();
             var holdingStockCodes = holdingStock.Select(x => x.Code).ToList();
 
@@ -57,24 +56,6 @@ namespace StockManager.Core.Services
                 stock.Histories.Add(this._mapper.Map<StockTransactionHistoryEntity, StockInfo.History>(transaction));
             }
 
-            foreach (var dividend in dividendHistory)
-            {
-                if (stockDictionary.TryGetValue(dividend.Code, out var stock))
-                {
-                    stock.Histories.Add(
-                        new StockInfo.History
-                        {
-                            Date = dividend.Date,
-                            Amount = dividend.Amount,
-                            Price = dividend.Profit,
-                            Memo = "-",
-                            Commission = 0,
-                            Type = StockActionType.Dividend
-                        }
-                    );
-                }
-            }
-
             var stocks = stockDictionary.Values.OrderBy(x => !holdingStockCodes.Contains(x.Code)).ThenByDescending(x => x.Histories.Max(x => x.Date)).ToList();
             foreach (var stock in stocks)
             {
@@ -83,41 +64,41 @@ namespace StockManager.Core.Services
                 var restStocks = new List<BuyStockInfo>();
                 foreach (var history in stock.Histories.OrderBy(x => x.Date))
                 {
-                    if (history.Type == StockActionType.Buy)
+                    if (history.Type == TransactionType.Buy)
                     {
                         restStocks.Add(
                             new BuyStockInfo
                             {
-                                Amount = history.Amount,
-                                Price = history.Price
+                                Quantity = history.Quantity,
+                                Amount = history.Amount
                             }
                        );
                     }
-                    else if (history.Type == StockActionType.Sell)
+                    else if (history.Type == TransactionType.Sell)
                     {
                         for (var i = 0; i < restStocks.Count; i++)
                         {
-                            if (restStocks[i].Amount == 0)
+                            if (restStocks[i].Quantity == 0)
                             {
                                 continue;
                             }
 
-                            if (restStocks[i].Amount >= history.Amount)
+                            if (restStocks[i].Quantity >= history.Quantity)
                             {
-                                restStocks[i].Amount -= history.Amount;
-                                stockProfit += (history.Price - restStocks[i].Price) * history.Amount;
+                                restStocks[i].Quantity -= history.Quantity;
+                                stockProfit += (history.Amount - restStocks[i].Amount) * history.Quantity;
                                 break;
                             }
                             else
                             {
-                                stockProfit += (history.Price - restStocks[i].Price) * restStocks[i].Amount;
-                                history.Amount -= restStocks[i].Amount;
+                                stockProfit += (history.Amount - restStocks[i].Amount) * restStocks[i].Quantity;
+                                history.Quantity -= restStocks[i].Quantity;
                             }
                         }
                     }
                     else
                     {
-                        dividendProfit += history.Price;
+                        dividendProfit += history.Amount;
                     }
                 }
                 stock.StockProfit = (int)stockProfit;
@@ -128,9 +109,9 @@ namespace StockManager.Core.Services
 
         private class BuyStockInfo
         {
-            public int Amount { get; set; }
+            public int Quantity { get; set; }
 
-            public double Price { get; set; }
+            public double Amount { get; set; }
         }
     }
 }

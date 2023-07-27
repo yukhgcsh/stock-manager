@@ -2,7 +2,7 @@
 @using StockManager.Core.InputModels;
 @using StockManager.Core.Services;
 
-@inject DividendService dividendService;
+@inject StockTransactionService transactionService;
 
 <MudDialog>
     <DialogContent>
@@ -12,8 +12,8 @@
                     <MudTextField T="int" @bind-Value="Data.Code" Label="銘柄コード" Required="true" RequiredError="※必須" />
                     <MudTextField T="string" @bind-Value="Data.Name" Label="会社名" Required="true" RequiredError="※必須" />
                     <MudDatePicker @bind-Date="Date" Label="日付" Required="true" RequiredError="※必須" />
-                    <MudTextField T="int" @bind-Value="Data.Amount" Label="株数" Required="true" RequiredError="※必須" />
-                    <MudTextField T="double" @bind-Value="Data.Profit" Label="利益" Required="true" RequiredError="※必須" />
+                    <MudTextField T="int" @bind-Value="Data.Quantity" Label="株数" Required="true" RequiredError="※必須" />
+                    <MudTextField T="double" @bind-Value="Data.Amount" Label="利益" Required="true" RequiredError="※必須" />
                 </MudForm>
             </MudItem>
         </MudGrid>
@@ -28,7 +28,7 @@
     [CascadingParameter]
     MudDialogInstance MudDialog { get; set; } = null!;
 
-    StockDividendHistory Data = new StockDividendHistory();
+    StockTransaction Data = new StockTransaction();
     bool IsValid = true;
     MudForm? Form;
     DateTime? Date;
@@ -36,7 +36,7 @@
     private async Task Register()
     {
         this.Data.Date = Date!.Value;
-        await dividendService.RegisterDividendAsync(this.Data);
+        await transactionService.RegisterStockTransactionAsync(this.Data);
         MudDialog.Close(DialogResult.Ok(true));
     }
 

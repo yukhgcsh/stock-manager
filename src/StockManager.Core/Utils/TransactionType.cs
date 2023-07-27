@@ -1,7 +1,7 @@
 ﻿namespace StockManager.Core.Utils
 {
     /// <summary>
-    ///     取引のタイプを定義します。
+    ///     金銭の授受が発生する取引種類を定義します。
     /// </summary>
     public enum TransactionType
     {
@@ -13,6 +13,11 @@
         /// <summary>
         ///     売却。
         /// </summary>
-        Sell = 2
+        Sell = 2,
+
+        /// <summary>
+        ///     配当金、分配金
+        /// </summary>
+        Dividend = 3
     }
 }

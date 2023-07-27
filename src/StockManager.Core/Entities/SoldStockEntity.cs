@@ -30,7 +30,7 @@ namespace StockManager.Core.Entities
         /// <summary>
         ///     取引株数を取得または設定します。
         /// </summary>
-        public int Amount { get; set; }
+        public int Quantity { get; set; }
 
         /// <summary>
         ///     売却による損益を取得または設定します。

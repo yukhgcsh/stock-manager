@@ -25,11 +25,11 @@ namespace StockManager.Core.Entities
         /// <summary>
         ///     購入株数を取得または設定します。
         /// </summary>
-        public int Amount { get; set; }
+        public int Quantity { get; set; }
 
         /// <summary>
         ///     購入額を取得または設定します。
         /// </summary>
-        public double Price { get; set; }
+        public double Amount { get; set; }
     }
 }
