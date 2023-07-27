@@ -15,7 +15,7 @@ namespace StockManager.Core.OutputModels
         /// <summary>
         ///     会社名を取得または設定します。
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         ///     この銘柄での確定した利益を取得または設定します。
@@ -36,7 +36,7 @@ namespace StockManager.Core.OutputModels
 
         public class History
         {
-            public string Memo { get; set; }
+            public string? Memo { get; set; }
 
             public TransactionType Type { get; set; }
 

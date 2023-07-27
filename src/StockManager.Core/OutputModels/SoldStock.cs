@@ -13,7 +13,7 @@
         /// <summary>
         ///     会社名を取得または設定します。
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
         /// <summary>
         ///     購入日付を取得または設定します。

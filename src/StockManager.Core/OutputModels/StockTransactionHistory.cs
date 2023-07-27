@@ -6,9 +6,9 @@ namespace StockManager.Core.OutputModels
     {
         public int Code { get; set; }
 
-        public string Name { get; set; }
+        public string Name { get; set; } = null!;
 
-        public string Memo { get; set; }
+        public string? Memo { get; set; }
 
         public TransactionType Type { get; set; }
 
