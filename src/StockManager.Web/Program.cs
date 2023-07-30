@@ -19,9 +19,11 @@ namespace StockManager.Web
             builder.Services.AddSingleton<FundsService>();
             builder.Services.AddSingleton<StockService>();
             builder.Services.AddSingleton<StockTransactionService>();
-            builder.Services.AddSingleton<IFundsRepository, DatabaseFundsRepository>();
-            builder.Services.AddSingleton<IStockHistoryRepository, DatabaseStockHistoryRepository>();
-            builder.Services.AddSingleton<IStockRepository, DatabaseStockRepository>();
+            builder.Services.AddSingleton<InvestmentTrustService>();
+            builder.Services.AddScoped<IFundsRepository, DatabaseFundsRepository>();
+            builder.Services.AddScoped<IStockHistoryRepository, DatabaseStockHistoryRepository>();
+            builder.Services.AddScoped<IStockRepository, DatabaseStockRepository>();
+            builder.Services.AddScoped<IInvestmentTrustHistoryRepository, DatabaseInvestmentTrustHistoryRepository>();
             builder.Services.AddAutoMapper(typeof(MapperProfile));
 
             if (!builder.Environment.IsProduction())
@@ -29,6 +31,7 @@ namespace StockManager.Web
                 builder.Services.AddSingleton<IFundsRepository, StubFundsRepository>();
                 builder.Services.AddSingleton<IStockHistoryRepository, StubStockHistoryRepository>();
                 builder.Services.AddSingleton<IStockRepository, StubStockRepository>();
+                builder.Services.AddSingleton<IInvestmentTrustHistoryRepository, StubInvestmentTrustHistoryRepository>();
             }
 
             var app = builder.Build();

@@ -16,3 +16,5 @@ Create TABLE IF NOT EXISTS stock_db.holding_stock
 Create TABLE IF NOT EXISTS stock_db.sold_stock
 (id int auto_increment, code int, bought_date DATE, sold_date DATE, amount int, profit int, index(id));
 
+Create TABLE IF NOT EXISTS stock_db.investment_trust_transaction_history
+(id int auto_increment, code int, date DATE, amount int, price double, unit int, type tinyint, memo varchar(1024), index(id));

@@ -1,0 +1,124 @@
+﻿@page "/investmentTrust"
+@using StockManager.Core.OutputModels;
+@using StockManager.Core.Services;
+@using StockManager.Core.Utils;
+
+@inject InvestmentTrustService service;
+@inject IDialogService dialogService;
+
+<MudButton @onclick="OpenTransactionRegister" Variant="Variant.Outlined" Color="Color.Info">
+    投資信託売買登録
+</MudButton>
+<MudButton @onclick="OpenDividendRegister" Variant="Variant.Outlined" Color="Color.Info">
+    分配金登録
+</MudButton>
+<MudDataGrid T="InvestmentTrustInfo" Items="@info" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
+    <ToolBarContent>
+        <MudText Typo="Typo.h4">投資信託一覧</MudText>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x!.Code" Filterable="false" Title="投資信託コード" />
+        <PropertyColumn Property="x => x!.Name" Title="投資信託名" />
+        <PropertyColumn Property="x => GetInvestmentTrustQuantity(x!)" Title="保有口数"></PropertyColumn>
+        <PropertyColumn Property="x => GetProfit(x!)" Title="損益(信託/分配金)" />
+        <TemplateColumn>
+            <CellTemplate>
+                <MudButton @onclick="() => OpenTransactionHistory(context.Item!)" Variant="Variant.Filled" Color="Color.Primary">
+                    取引履歴
+                </MudButton>
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+@code {
+    IList<InvestmentTrustInfo>? info;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.info = await service.GetInvestmentTrustAsync();
+    }
+
+    private async Task OpenTransactionRegister()
+    {
+        var options = new DialogOptions
+            {
+                CloseOnEscapeKey = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Medium
+            };
+        var result = await dialogService.Show<InvestmentTrustRegisterDialog>("株式売買登録", options).Result;
+        if (result.Data is bool boolResult && boolResult)
+        {
+            this.info = await service.GetInvestmentTrustAsync();
+        }
+    }
+
+    private async Task OpenDividendRegister()
+    {
+        var options = new DialogOptions
+            {
+                CloseOnEscapeKey = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Medium
+            };
+        var result = await dialogService.Show<InvestmentTrustDividendRegisterDialog>("配当金登録", options).Result;
+        if (result.Data is bool boolResult && boolResult)
+        {
+            this.info = await service.GetInvestmentTrustAsync();
+        }
+    }
+
+    private void OpenTransactionHistory(InvestmentTrustInfo info)
+    {
+        var options = new DialogOptions
+            {
+                CloseOnEscapeKey = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Large
+            };
+        var parameter = new DialogParameters<InvestmentTrustHistoryDialog>
+        {
+            {
+                x => x.TrustInfo,
+                info
+            }
+        };
+        dialogService.Show<InvestmentTrustHistoryDialog>($"{info.Name}({info.Code})", parameter, options);
+    }
+
+    private string GetInvestmentTrustQuantity(InvestmentTrustInfo info)
+    {
+        var currentQuantity = info.Histories.Sum(x =>
+            {
+                if (x.Type == TransactionType.Buy)
+                {
+                    return x.Quantity * x.Unit;
+                }
+                else if (x.Type == TransactionType.Sell)
+                {
+                    return -1 * x.Quantity * x.Unit;
+                }
+                else
+                {
+                    return 0;
+                }
+            });
+        var unit = info.Histories.OrderByDescending(x => x.Date).First().Unit;
+
+        if (currentQuantity != 0)
+        {
+            return $"{currentQuantity} 口保有(単位：{unit}口)";
+        }
+        else
+        {
+            return "全口売却済み";
+        }
+    }
+
+    private string GetProfit(InvestmentTrustInfo info)
+    {
+        var total = info.InvestmentTrustProfit + info.DividendProfit;
+        return $"{total.ToString("#,0")}({info.InvestmentTrustProfit.ToString("#,0")}/{info.DividendProfit.ToString("#,0")})";
+    }
+}
