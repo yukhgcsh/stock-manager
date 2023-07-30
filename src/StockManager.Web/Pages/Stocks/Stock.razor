@@ -48,7 +48,7 @@
                 FullWidth = true,
                 MaxWidth = MaxWidth.Medium
             };
-        var result = await dialogService.Show<TransactionRegisterDialog>("株式売買登録", options).Result;
+        var result = await dialogService.Show<StockTransactionRegisterDialog>("株式売買登録", options).Result;
         if (result.Data is bool boolResult && boolResult)
         {
             this.Stocks = await stockService.GetStocksAsync();
@@ -63,7 +63,7 @@
                 FullWidth = true,
                 MaxWidth = MaxWidth.Medium
             };
-        var result = await dialogService.Show<DividendRegisterDialog>("配当金登録", options).Result;
+        var result = await dialogService.Show<StockDividendRegisterDialog>("配当金登録", options).Result;
         if (result.Data is bool boolResult && boolResult)
         {
             this.Stocks = await stockService.GetStocksAsync();
