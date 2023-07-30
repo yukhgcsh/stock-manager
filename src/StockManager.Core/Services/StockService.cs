@@ -36,7 +36,7 @@ namespace StockManager.Core.Services
         {
             var stockCodes = await this._stockRepository.GetStockCodesAsync();
             var stockCodeDictionary = stockCodes.ToDictionary(x => x.Code, x => x.Name);
-            var transactionHistory = await this._stockHistoryRepository.FetchHistoryAsync(period: null);
+            var transactionHistory = await this._stockHistoryRepository.FetchHistoryAsync();
             var holdingStock = await this._stockRepository.GetHoldingStocksAsync();
             var holdingStockCodes = holdingStock.Select(x => x.Code).ToList();
 
