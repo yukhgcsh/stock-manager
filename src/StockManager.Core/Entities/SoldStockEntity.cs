@@ -1,5 +1,4 @@
-﻿using System;
-namespace StockManager.Core.Entities
+﻿namespace StockManager.Core.Entities
 {
     /// <summary>
     ///     売却済み株式の情報を定義します。

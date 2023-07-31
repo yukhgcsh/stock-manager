@@ -1,5 +1,4 @@
-﻿
-namespace StockManager.Core.Entities
+﻿namespace StockManager.Core.Entities
 {
     /// <summary>
     ///     保有株式の情報を定義します。

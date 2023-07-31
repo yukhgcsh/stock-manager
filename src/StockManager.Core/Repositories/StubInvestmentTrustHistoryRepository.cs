@@ -56,6 +56,7 @@ namespace StockManager.Core.Repositories
             },
         };
 
+        /// <inheritdoc />
         public ValueTask<IEnumerable<InvestmentTrustHistoryEntity>> FetchAsync(TimeSpan? period = null)
         {
             var now = DateTime.Now;
@@ -69,6 +70,7 @@ namespace StockManager.Core.Repositories
             }
         }
 
+        /// <inheritdoc />
         public ValueTask RegisterAsync(InvestmentTrustHistoryEntity entity)
         {
             this._history.Add(entity);

@@ -7,25 +7,37 @@ using StockManager.Core.Utils;
 
 namespace StockManager.Core.Services
 {
+    /// <summary>
+    ///     投資信託に関する操作を提供します。
+    /// </summary>
     public class InvestmentTrustService
     {
         private readonly IInvestmentTrustHistoryRepository _historyRepository;
         private readonly IMapper _mapper;
 
+        /// <summary>
+        ///     新しいインスタンスを作成します。
+        /// </summary>
+        /// <param name="investmentTrustHistoryRepository"><see cref="IInvestmentTrustHistoryRepository"/> 。</param>
+        /// <param name="mapper"><see cref="IMapper"/> 。</param>
         public InvestmentTrustService(IInvestmentTrustHistoryRepository investmentTrustHistoryRepository, IMapper mapper)
         {
             this._historyRepository = investmentTrustHistoryRepository;
             this._mapper = mapper;
         }
 
+        /// <summary>
+        ///     投資信託の一覧を取得します。
+        /// </summary>
+        /// <returns></returns>
         public async ValueTask<IList<InvestmentTrustInfo>> GetInvestmentTrustAsync()
         {
-            var transactions = await this._historyRepository.FetchAsync();
+            IEnumerable<InvestmentTrustHistoryEntity> transactions = await this._historyRepository.FetchAsync();
 
-            var trustDictionary = new Dictionary<int, InvestmentTrustInfo>();
-            foreach (var transaction in transactions)
+            Dictionary<int, InvestmentTrustInfo> trustDictionary = new Dictionary<int, InvestmentTrustInfo>();
+            foreach (InvestmentTrustHistoryEntity transaction in transactions)
             {
-                if (!trustDictionary.TryGetValue(transaction.Code, out var trustInfo))
+                if (!trustDictionary.TryGetValue(transaction.Code, out InvestmentTrustInfo? trustInfo))
                 {
                     trustInfo = new InvestmentTrustInfo
                     {
@@ -38,12 +50,12 @@ namespace StockManager.Core.Services
                 trustInfo.Histories.Add(this._mapper.Map<InvestmentTrustHistoryEntity, InvestmentTrustInfo.History>(transaction));
             }
 
-            foreach (var trust in trustDictionary.Values)
+            foreach (InvestmentTrustInfo trust in trustDictionary.Values)
             {
-                var trustProfit = 0d;
-                var dividendProfit = 0d;
-                var restTrust = new List<BuyInfo>();
-                foreach (var history in trust.Histories.OrderBy(x => x.Date))
+                double trustProfit = 0d;
+                double dividendProfit = 0d;
+                List<BuyInfo> restTrust = new List<BuyInfo>();
+                foreach (InvestmentTrustInfo.History? history in trust.Histories.OrderBy(x => x.Date))
                 {
                     if (history.Type == TransactionType.Buy)
                     {
@@ -57,7 +69,7 @@ namespace StockManager.Core.Services
                     }
                     else if (history.Type == TransactionType.Sell)
                     {
-                        for (var i = 0; i < restTrust.Count; i++)
+                        for (int i = 0; i < restTrust.Count; i++)
                         {
                             if (restTrust[i].Quantity == 0)
                             {
@@ -87,7 +99,7 @@ namespace StockManager.Core.Services
             }
             return trustDictionary.Values.OrderBy(x =>
                 {
-                    var currentQuantity = x.Histories.Sum(y =>
+                    int currentQuantity = x.Histories.Sum(y =>
                     {
                         if (y.Type == TransactionType.Buy)
                         {
@@ -115,15 +127,25 @@ namespace StockManager.Core.Services
                 .ToList();
         }
 
+        /// <summary>
+        ///     投資信託の取引履歴を登録します。
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <returns></returns>
         public async ValueTask RegisterDividendAsync(InvestmentTrustTransaction transaction)
         {
-            var entity = this._mapper.Map<InvestmentTrustTransaction, InvestmentTrustHistoryEntity>(transaction);
+            InvestmentTrustHistoryEntity entity = this._mapper.Map<InvestmentTrustTransaction, InvestmentTrustHistoryEntity>(transaction);
             await this._historyRepository.RegisterAsync(entity);
         }
 
+        /// <summary>
+        ///     投資信託の分配金を登録します。
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <returns></returns>
         public async ValueTask RegisterInvestmentTrustAsync(InvestmentTrustTransaction transaction)
         {
-            var entity = this._mapper.Map<InvestmentTrustTransaction, InvestmentTrustHistoryEntity>(transaction);
+            InvestmentTrustHistoryEntity entity = this._mapper.Map<InvestmentTrustTransaction, InvestmentTrustHistoryEntity>(transaction);
             await this._historyRepository.RegisterAsync(entity);
         }
 

@@ -1,7 +1,7 @@
-﻿using StockManager.Core.Repositories;
-using StockManager.Core.OutputModels;
-using AutoMapper;
+﻿using AutoMapper;
 using StockManager.Core.Entities;
+using StockManager.Core.OutputModels;
+using StockManager.Core.Repositories;
 
 namespace StockManager.Core.Services
 {
@@ -45,8 +45,8 @@ namespace StockManager.Core.Services
         /// <returns>非同期処理の状態。値あh現在の損益です。</returns>
         public async ValueTask<ProfitAndLoss> GetProfitAndLossAsync()
         {
-            var fixledProfit = await this.GetFixedProfitAsync();
-            var unrealizedProfit = await this.GetUnrealizedProfitAsync();
+            ProfitAndLoss fixledProfit = await this.GetFixedProfitAsync();
+            ProfitAndLoss unrealizedProfit = await this.GetUnrealizedProfitAsync();
 
             return new ProfitAndLoss
             {
@@ -59,12 +59,12 @@ namespace StockManager.Core.Services
 
         private async ValueTask<ProfitAndLoss> GetFixedProfitAsync()
         {
-            var result = new ProfitAndLoss();
-            var soldStocks = await this._stockRepository.GetSoldStocksAsync();
-            var today = DateTimeOffset.Now;
-            foreach (var stock in soldStocks)
+            ProfitAndLoss result = new ProfitAndLoss();
+            IEnumerable<SoldStockEntity> soldStocks = await this._stockRepository.GetSoldStocksAsync();
+            DateTimeOffset today = DateTimeOffset.Now;
+            foreach (SoldStockEntity stock in soldStocks)
             {
-                var diff = today - stock.SoldDate;
+                TimeSpan diff = today - stock.SoldDate;
                 result.Total += stock.Profit;
                 if (diff <= TimeSpan.FromDays(365))
                 {
@@ -88,7 +88,7 @@ namespace StockManager.Core.Services
         private ValueTask<ProfitAndLoss> GetUnrealizedProfitAsync()
         {
 #warning 実装
-            var value = new ProfitAndLoss
+            ProfitAndLoss value = new ProfitAndLoss
             {
                 HalfYear = 0,
                 OneYear = 0,
@@ -104,13 +104,13 @@ namespace StockManager.Core.Services
         /// <returns>非同期処理の状態。値は保有株式の一覧です。</returns>
         public async ValueTask<IEnumerable<HoldingStock>> GetHoldingStockAsync()
         {
-            var data = await this._stockRepository.GetHoldingStocksAsync();
-            var stockCodes = await this._stockRepository.GetStockCodesAsync();
-            var stockCodeDictionary = stockCodes.ToDictionary(x => x.Code, x => x.Name);
+            IEnumerable<HoldingStockEntity> data = await this._stockRepository.GetHoldingStocksAsync();
+            IEnumerable<StockCodeEntity> stockCodes = await this._stockRepository.GetStockCodesAsync();
+            Dictionary<int, string> stockCodeDictionary = stockCodes.ToDictionary(x => x.Code, x => x.Name);
             return data.Select(x =>
                 {
-                    var stock = this._mapper.Map<HoldingStockEntity, HoldingStock>(x);
-                    if (stockCodeDictionary.TryGetValue(stock.Code, out var name))
+                    HoldingStock stock = this._mapper.Map<HoldingStockEntity, HoldingStock>(x);
+                    if (stockCodeDictionary.TryGetValue(stock.Code, out string? name))
                     {
                         stock.Name = name;
                     }
@@ -129,13 +129,13 @@ namespace StockManager.Core.Services
         /// <returns>非同期処理の状態。値は期限内の取引の一覧。</returns>
         public async ValueTask<IEnumerable<StockTransactionHistory>> FetchTransactionHistoryAsync(TimeSpan? fetchPeriod)
         {
-            var transactions = await this._stockHistoryRepository.FetchHistoryAsync(fetchPeriod);
-            var stockCodes = await this._stockRepository.GetStockCodesAsync();
-            var stockCodeDictionary = stockCodes.ToDictionary(x => x.Code, x => x.Name);
+            IEnumerable<StockTransactionHistoryEntity> transactions = await this._stockHistoryRepository.FetchHistoryAsync(fetchPeriod);
+            IEnumerable<StockCodeEntity> stockCodes = await this._stockRepository.GetStockCodesAsync();
+            Dictionary<int, string> stockCodeDictionary = stockCodes.ToDictionary(x => x.Code, x => x.Name);
             return transactions.Select(x =>
                 {
-                    var stock = this._mapper.Map<StockTransactionHistoryEntity, StockTransactionHistory>(x);
-                    if (stockCodeDictionary.TryGetValue(stock.Code, out var name))
+                    StockTransactionHistory stock = this._mapper.Map<StockTransactionHistoryEntity, StockTransactionHistory>(x);
+                    if (stockCodeDictionary.TryGetValue(stock.Code, out string? name))
                     {
                         stock.Name = name;
                     }
