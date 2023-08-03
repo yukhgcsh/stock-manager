@@ -2,6 +2,7 @@
 using StockManager.Core.Entities;
 using StockManager.Core.InputModels;
 using StockManager.Core.Repositories;
+using StockManager.Core.Transactions;
 using StockManager.Core.Utils;
 
 namespace StockManager.Core.Services
@@ -13,6 +14,7 @@ namespace StockManager.Core.Services
     {
         private readonly IStockRepository _stockRepository;
         private readonly IStockHistoryRepository _stockHistoryRepository;
+        private readonly ITransactionManager _tradesTransactionManager;
         private readonly IMapper _mapper;
 
         /// <summary>
@@ -21,10 +23,11 @@ namespace StockManager.Core.Services
         /// <param name="stockRepository">株式リポジトリ。</param>
         /// <param name="stockHistoryRepository">株式取引履歴リポジトリ。</param>
         /// <param name="mapper"><see cref="IMapper"/> 。</param>
-        public StockTransactionService(IStockRepository stockRepository, IStockHistoryRepository stockHistoryRepository, IMapper mapper)
+        public StockTransactionService(IStockRepository stockRepository, IStockHistoryRepository stockHistoryRepository, ITransactionManager transactionManager, IMapper mapper)
         {
             this._stockRepository = stockRepository;
             this._stockHistoryRepository = stockHistoryRepository;
+            this._tradesTransactionManager = transactionManager;
             this._mapper = mapper;
         }
 
@@ -35,6 +38,7 @@ namespace StockManager.Core.Services
         /// <returns>非同期処理の状態。</returns>
         public async ValueTask RegisterStockTransactionAsync(StockTransaction stockTransaction)
         {
+            await using var transaction = await this._tradesTransactionManager.BeginTransactionAsync();
             var historyEntity = this._mapper.Map<StockTransaction, StockTransactionHistoryEntity>(stockTransaction);
             var stockCode = new StockCodeEntity
             {
@@ -42,23 +46,20 @@ namespace StockManager.Core.Services
                 Name = stockTransaction.Name
             };
 
-            var waitTaskList = new List<Task>()
-            {
-                this._stockRepository.UpsertStockCodeAsync(stockCode).AsTask(),
-                this._stockHistoryRepository.RegisterTransactionAsync(historyEntity).AsTask(),
-            };
+            await this._stockRepository.UpsertStockCodeAsync(stockCode);
+            await this._stockHistoryRepository.RegisterTransactionAsync(historyEntity);
 
             if (stockTransaction.Type == TransactionType.Buy)
             {
                 var buyEntity = this._mapper.Map<StockTransaction, HoldingStockEntity>(stockTransaction);
-                waitTaskList.Add(this._stockRepository.BuyStockAsync(buyEntity).AsTask());
+                await this._stockRepository.BuyStockAsync(buyEntity);
             }
             else if (stockTransaction.Type == TransactionType.Sell)
             {
-                waitTaskList.Add(this._stockRepository.SellStockAsync(stockTransaction.Code, stockTransaction.Date, stockTransaction.Quantity, stockTransaction.Amount).AsTask());
+                await this._stockRepository.SellStockAsync(stockTransaction.Code, stockTransaction.Date, stockTransaction.Quantity, stockTransaction.Amount);
             }
 
-            await Task.WhenAll(waitTaskList);
+            await transaction.CommitAsync();
         }
     }
 }

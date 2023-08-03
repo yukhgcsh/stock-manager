@@ -2,6 +2,7 @@
 using StockManager.Core.Entities;
 using StockManager.Core.OutputModels;
 using StockManager.Core.Repositories;
+using StockManager.Core.Transactions;
 using StockManager.Core.Utils;
 
 namespace StockManager.Core.Services
@@ -13,6 +14,7 @@ namespace StockManager.Core.Services
     {
         private readonly IStockRepository _stockRepository;
         private readonly IStockHistoryRepository _stockHistoryRepository;
+        private readonly ITransactionManager _transactionManager;
         private readonly IMapper _mapper;
 
         /// <summary>
@@ -21,10 +23,11 @@ namespace StockManager.Core.Services
         /// <param name="stockRepository">株式リポジトリ。</param>
         /// <param name="stockHistoryRepository">株式取引履歴リポジトリ。</param>
         /// <param name="mapper"><see cref="IMapper"/> 。</param>
-        public StockService(IStockRepository stockRepository, IStockHistoryRepository stockHistoryRepository, IMapper mapper)
+        public StockService(IStockRepository stockRepository, IStockHistoryRepository stockHistoryRepository, ITransactionManager transactionManager, IMapper mapper)
         {
             this._stockRepository = stockRepository;
             this._stockHistoryRepository = stockHistoryRepository;
+            this._transactionManager = transactionManager;
             this._mapper = mapper;
         }
 
@@ -34,6 +37,7 @@ namespace StockManager.Core.Services
         /// <returns>非同期処理の状態。値は保有株式の一覧です。</returns>
         public async ValueTask<IList<StockInfo>> GetStocksAsync()
         {
+            await this._transactionManager.OpenAsync();
             var stockCodes = await this._stockRepository.GetStockCodesAsync();
             var stockCodeDictionary = stockCodes.ToDictionary(x => x.Code, x => x.Name);
             var transactionHistory = await this._stockHistoryRepository.FetchHistoryAsync();

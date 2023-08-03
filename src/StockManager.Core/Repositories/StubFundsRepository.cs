@@ -54,19 +54,23 @@ namespace StockManager.Core.Repositories
         }
 
         /// <inheritdoc />
-        public ValueTask<int> IncreaseCapitalAsync(FundsHistoryEntity entity)
+        public ValueTask IncreaseCapitalAsync(int amount)
         {
-            this._capital += entity.Amount;
-            this._fundsHistories.Add(entity);
-            return new ValueTask<int>(this._capital);
+            this._capital += amount;
+            return ValueTask.CompletedTask;
         }
 
         /// <inheritdoc />
-        public ValueTask<int> ReduceCapitalAsync(FundsHistoryEntity entity)
+        public ValueTask ReduceCapitalAsync(int amount)
         {
-            this._capital -= entity.Amount;
+            this._capital -= amount;
+            return ValueTask.CompletedTask;
+        }
+
+        public ValueTask RegisterHistoryAsync(FundsHistoryEntity entity)
+        {
             this._fundsHistories.Add(entity);
-            return new ValueTask<int>(this._capital);
+            return ValueTask.CompletedTask;
         }
     }
 }

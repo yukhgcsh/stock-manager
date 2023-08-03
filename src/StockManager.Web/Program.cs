@@ -1,6 +1,9 @@
 using MudBlazor.Services;
+using MySqlConnector;
+using StockManager.Core.Options;
 using StockManager.Core.Repositories;
 using StockManager.Core.Services;
+using StockManager.Core.Transactions;
 using StockManager.Core.Utils;
 
 namespace StockManager.Web
@@ -9,17 +12,19 @@ namespace StockManager.Web
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor();
             builder.Services.AddMudServices();
-            builder.Services.AddSingleton<DashboardService>();
-            builder.Services.AddSingleton<FundsService>();
-            builder.Services.AddSingleton<StockService>();
-            builder.Services.AddSingleton<StockTransactionService>();
-            builder.Services.AddSingleton<InvestmentTrustService>();
+            builder.Services.AddScoped<DashboardService>();
+            builder.Services.AddScoped<FundsService>();
+            builder.Services.AddScoped<StockService>();
+            builder.Services.AddScoped<StockTransactionService>();
+            builder.Services.AddScoped<InvestmentTrustService>();
+            builder.Services.AddScoped(_ => new MySqlConnection(builder.Configuration.GetConnectionString("Database")));
+            builder.Services.AddScoped<ITransactionManager, DatabaseTransactionManager>();
             builder.Services.AddScoped<IFundsRepository, DatabaseFundsRepository>();
             builder.Services.AddScoped<IStockHistoryRepository, DatabaseStockHistoryRepository>();
             builder.Services.AddScoped<IStockRepository, DatabaseStockRepository>();
@@ -28,13 +33,16 @@ namespace StockManager.Web
 
             if (!builder.Environment.IsProduction())
             {
+                builder.Services.AddScoped<ITransactionManager, StubTransactionManager>();
                 builder.Services.AddSingleton<IFundsRepository, StubFundsRepository>();
                 builder.Services.AddSingleton<IStockHistoryRepository, StubStockHistoryRepository>();
                 builder.Services.AddSingleton<IStockRepository, StubStockRepository>();
                 builder.Services.AddSingleton<IInvestmentTrustHistoryRepository, StubInvestmentTrustHistoryRepository>();
             }
 
-            var app = builder.Build();
+            builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.OptionName));
+
+            WebApplication app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

@@ -3,6 +3,7 @@ using StockManager.Core.Entities;
 using StockManager.Core.InputModels;
 using StockManager.Core.OutputModels;
 using StockManager.Core.Repositories;
+using StockManager.Core.Transactions;
 using StockManager.Core.Utils;
 
 namespace StockManager.Core.Services
@@ -13,6 +14,7 @@ namespace StockManager.Core.Services
     public class InvestmentTrustService
     {
         private readonly IInvestmentTrustHistoryRepository _historyRepository;
+        private readonly ITransactionManager _transactionManager;
         private readonly IMapper _mapper;
 
         /// <summary>
@@ -20,9 +22,10 @@ namespace StockManager.Core.Services
         /// </summary>
         /// <param name="investmentTrustHistoryRepository"><see cref="IInvestmentTrustHistoryRepository"/> 。</param>
         /// <param name="mapper"><see cref="IMapper"/> 。</param>
-        public InvestmentTrustService(IInvestmentTrustHistoryRepository investmentTrustHistoryRepository, IMapper mapper)
+        public InvestmentTrustService(IInvestmentTrustHistoryRepository investmentTrustHistoryRepository, ITransactionManager transactionManager, IMapper mapper)
         {
             this._historyRepository = investmentTrustHistoryRepository;
+            this._transactionManager = transactionManager;
             this._mapper = mapper;
         }
 
@@ -32,12 +35,13 @@ namespace StockManager.Core.Services
         /// <returns></returns>
         public async ValueTask<IList<InvestmentTrustInfo>> GetInvestmentTrustAsync()
         {
-            IEnumerable<InvestmentTrustHistoryEntity> transactions = await this._historyRepository.FetchAsync();
+            await this._transactionManager.OpenAsync();
+            var transactions = await this._historyRepository.FetchAsync();
 
-            Dictionary<int, InvestmentTrustInfo> trustDictionary = new Dictionary<int, InvestmentTrustInfo>();
-            foreach (InvestmentTrustHistoryEntity transaction in transactions)
+            var trustDictionary = new Dictionary<int, InvestmentTrustInfo>();
+            foreach (var transaction in transactions)
             {
-                if (!trustDictionary.TryGetValue(transaction.Code, out InvestmentTrustInfo? trustInfo))
+                if (!trustDictionary.TryGetValue(transaction.Code, out var trustInfo))
                 {
                     trustInfo = new InvestmentTrustInfo
                     {
@@ -50,12 +54,12 @@ namespace StockManager.Core.Services
                 trustInfo.Histories.Add(this._mapper.Map<InvestmentTrustHistoryEntity, InvestmentTrustInfo.History>(transaction));
             }
 
-            foreach (InvestmentTrustInfo trust in trustDictionary.Values)
+            foreach (var trust in trustDictionary.Values)
             {
-                double trustProfit = 0d;
-                double dividendProfit = 0d;
-                List<BuyInfo> restTrust = new List<BuyInfo>();
-                foreach (InvestmentTrustInfo.History? history in trust.Histories.OrderBy(x => x.Date))
+                var trustProfit = 0d;
+                var dividendProfit = 0d;
+                var restTrust = new List<BuyInfo>();
+                foreach (var history in trust.Histories.OrderBy(x => x.Date))
                 {
                     if (history.Type == TransactionType.Buy)
                     {
@@ -69,7 +73,7 @@ namespace StockManager.Core.Services
                     }
                     else if (history.Type == TransactionType.Sell)
                     {
-                        for (int i = 0; i < restTrust.Count; i++)
+                        for (var i = 0; i < restTrust.Count; i++)
                         {
                             if (restTrust[i].Quantity == 0)
                             {
@@ -134,8 +138,10 @@ namespace StockManager.Core.Services
         /// <returns></returns>
         public async ValueTask RegisterDividendAsync(InvestmentTrustTransaction transaction)
         {
-            InvestmentTrustHistoryEntity entity = this._mapper.Map<InvestmentTrustTransaction, InvestmentTrustHistoryEntity>(transaction);
+            await using var manager = await this._transactionManager.BeginTransactionAsync();
+            var entity = this._mapper.Map<InvestmentTrustTransaction, InvestmentTrustHistoryEntity>(transaction);
             await this._historyRepository.RegisterAsync(entity);
+            await manager.CommitAsync();
         }
 
         /// <summary>
@@ -145,8 +151,10 @@ namespace StockManager.Core.Services
         /// <returns></returns>
         public async ValueTask RegisterInvestmentTrustAsync(InvestmentTrustTransaction transaction)
         {
-            InvestmentTrustHistoryEntity entity = this._mapper.Map<InvestmentTrustTransaction, InvestmentTrustHistoryEntity>(transaction);
+            await using var manager = await this._transactionManager.BeginTransactionAsync();
+            var entity = this._mapper.Map<InvestmentTrustTransaction, InvestmentTrustHistoryEntity>(transaction);
             await this._historyRepository.RegisterAsync(entity);
+            await manager.CommitAsync();
         }
 
         private class BuyInfo

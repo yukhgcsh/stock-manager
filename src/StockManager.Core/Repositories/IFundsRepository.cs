@@ -22,15 +22,22 @@ namespace StockManager.Core.Repositories
         /// <summary>
         ///     元手を増やします。
         /// </summary>
-        /// <param name="entity">元手の増加量。</param>
-        /// <returns>非同期処理の状態。値は更新後の元手の額です。</returns>
-        ValueTask<int> IncreaseCapitalAsync(FundsHistoryEntity entity);
+        /// <param name="amount">元手の増加量。</param>
+        /// <returns>非同期処理の状態。</returns>
+        ValueTask IncreaseCapitalAsync(int amount);
 
         /// <summary>
         ///     元手を減らします。
         /// </summary>
-        /// <param name="entity">元手の減少量。</param>
-        /// <returns>非同期処理の状態。値は更新後の元手の額です。</returns>
-        ValueTask<int> ReduceCapitalAsync(FundsHistoryEntity entity);
+        /// <param name="amount">元手の減少量。</param>
+        /// <returns>非同期処理の状態。</returns>
+        ValueTask ReduceCapitalAsync(int amount);
+
+        /// <summary>
+        ///     元手の取引履歴を登録します。
+        /// </summary>
+        /// <param name="entity">取引履歴。</param>
+        /// <returns>非同期処理の状態。</returns>
+        ValueTask RegisterHistoryAsync(FundsHistoryEntity entity);
     }
 }
