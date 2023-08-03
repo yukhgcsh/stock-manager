@@ -4,11 +4,15 @@
 @using StockManager.Core.Services;
 
 @inject FundsService fundsService;
+@inject IDialogService dialogService;
 
 <PageTitle>元手管理</PageTitle>
 
 <h1>元手管理</h1>
 
+<MudButton @onclick="OpenRegisterDialog" Variant="Variant.Outlined" Color="Color.Info">
+    株式売買登録
+</MudButton>
 <MudStack Row="true" Spacing="3">
     <MudCard>
         <MudCardHeader>
@@ -34,7 +38,7 @@
 @code {
     int Capital = 100;
     IList<FundsTransition>? CapitalData;
-    
+
     protected override async Task OnInitializedAsync()
     {
         this.Capital = await fundsService.GetCapitalAsync();
@@ -42,8 +46,23 @@
     }
 
 
-    string FormatAsDate(object value)
+    private string FormatAsDate(object value)
         => ((DateTime)value).ToShortDateString();
 
+    private async Task OpenRegisterDialog()
+    {
+        var options = new DialogOptions
+            {
+                CloseOnEscapeKey = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Medium
+            };
 
+        var result = await dialogService.Show<FundsRegisterDialog>("元手登録", options).Result;
+        if (result.Data is bool boolResult && boolResult)
+        {
+            this.Capital = await fundsService.GetCapitalAsync();
+            this.CapitalData = await fundsService.FetchFundsTransitionsAsync();
+        }
+    }
 }

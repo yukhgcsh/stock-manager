@@ -1,0 +1,51 @@
+﻿@using StockManager.Core.InputModels;
+@using StockManager.Core.Services;
+@using StockManager.Core.Utils;
+
+@inject FundsService fundsService;
+
+<MudDialog>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="12" sm="12">
+                <MudForm Model="@Data" @ref="@Form" @bind-IsValid="@IsValid">
+                    <MudTextField T="int" @bind-Value="Data.Amount" Label="額" Required="true" RequiredError="※必須" />
+                    <div class="d-flex">
+                        <MudRadioGroup @bind-SelectedOption="Data.Type" T="FundsHistoryType" Required="true" RequiredError="Account type is required!">
+                            <MudRadio Option="@(FundsHistoryType.Deposit)">入金</MudRadio>
+                            <MudRadio Option="@(FundsHistoryType.Withdrawal)">出金</MudRadio>
+                        </MudRadioGroup>
+                    </div>
+                    <MudDatePicker @bind-Date="Date" Label="日付" Required="true" RequiredError="※必須" />
+                    <MudTextField T="string" @bind-Value="Data.Memo" Label="メモ" Required="false" />
+                </MudForm>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Close">閉じる</MudButton>
+        <MudButton OnClick="Register" Disabled="@(!IsValid)">登録</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+
+    FundsHistory Data = new FundsHistory();
+    bool IsValid = true;
+    DateTime? Date;
+    MudForm? Form;
+
+    protected async Task Register()
+    {
+        this.Data.Date = this.Date!.Value;
+        await fundsService.RegisterFundsHistoryAsync(this.Data);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+}
