@@ -119,7 +119,7 @@ namespace StockManager.Core.Repositories
         public ValueTask RegisterTransactionAsync(StockTransactionHistoryEntity transaction)
         {
             this._transactions.Add(transaction);
-            return new ValueTask(Task.CompletedTask);
+            return ValueTask.CompletedTask;
         }
     }
 }

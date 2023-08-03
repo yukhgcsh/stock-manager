@@ -107,7 +107,7 @@ namespace StockManager.Core.Repositories
                     entity
                 };
             }
-            return new ValueTask(Task.CompletedTask);
+            return ValueTask.CompletedTask;
         }
 
         /// <inheritdoc />
@@ -175,14 +175,14 @@ namespace StockManager.Core.Repositories
                 }
             }
 
-            return new ValueTask(Task.CompletedTask);
+            return ValueTask.CompletedTask;
         }
 
         /// <inheritdoc />
         public ValueTask UpsertStockCodeAsync(StockCodeEntity stockCode)
         {
             this._stockCodes[stockCode.Code] = stockCode;
-            return new ValueTask(Task.CompletedTask);
+            return ValueTask.CompletedTask;
         }
     }
 }

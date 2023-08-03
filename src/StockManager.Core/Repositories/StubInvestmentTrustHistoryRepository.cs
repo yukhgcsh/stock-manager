@@ -74,7 +74,7 @@ namespace StockManager.Core.Repositories
         public ValueTask RegisterAsync(InvestmentTrustHistoryEntity entity)
         {
             this._history.Add(entity);
-            return new ValueTask(Task.CompletedTask);
+            return ValueTask.CompletedTask;
         }
     }
 }
