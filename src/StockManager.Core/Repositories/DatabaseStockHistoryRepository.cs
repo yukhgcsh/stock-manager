@@ -26,7 +26,9 @@ namespace StockManager.Core.Repositories
             using var command = new MySqlCommand();
             command.Connection = this._connection;
 
-            command.CommandText = $"SELECT id, code, date, quantity, price, type, memo FROM {this._option.CurrentValue.DatabaseName}.{Constants.StockTransactionHistoryTableName};";
+            var time = DateTime.Now - period;
+            command.CommandText = $"SELECT id, code, date, quantity, price, type, memo FROM {this._option.CurrentValue.DatabaseName}.{Constants.StockTransactionHistoryTableName} WHERE date >= @time;";
+            command.Parameters.Add(new MySqlParameter("@time", time));
             using var reader = await command.ExecuteReaderAsync();
             var result = new List<StockTransactionHistoryEntity>();
 
