@@ -1,5 +1,47 @@
-﻿<h3>InvestmentTrustDividendRegisterDialog</h3>
+﻿@using StockManager.Core.InputModels;
+@using StockManager.Core.Services;
+
+@inject InvestmentTrustService service;
+
+<MudDialog>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="12" sm="12">
+                <MudForm Model="@Data" @ref="@Form" @bind-IsValid="@IsValid">
+                    <MudTextField T="int" @bind-Value="Data.Code" Label="投資信託コード" Required="true" RequiredError="※必須" />
+                    <MudTextField T="string" @bind-Value="Data.Name" Label="投資信託名" Required="true" RequiredError="※必須" />
+                    <MudDatePicker @bind-Date="Date" Label="日付" Required="true" RequiredError="※必須" />
+                    <MudTextField T="int" @bind-Value="Data.Quantity" Label="口数" Required="true" RequiredError="※必須" />
+                    <MudTextField T="int" @bind-Value="Data.Unit" Label="購入単位" Required="true" RequiredError="※必須" />
+                    <MudTextField T="double" @bind-Value="Data.Amount" Label="分配金" Required="true" RequiredError="※必須" />
+                </MudForm>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Close">閉じる</MudButton>
+        <MudButton OnClick="Register" Disabled="@(!IsValid)">登録</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
 
+    InvestmentTrustTransaction Data = new InvestmentTrustTransaction();
+    bool IsValid = true;
+    MudForm? Form;
+    DateTime? Date;
+
+    private async Task Register()
+    {
+        this.Data.Date = Date!.Value;
+        await service.RegisterDividendAsync(this.Data);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
 }

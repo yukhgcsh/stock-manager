@@ -1,4 +1,8 @@
-﻿using StockManager.Core.Entities;
+﻿using Microsoft.Extensions.Options;
+using MySqlConnector;
+using StockManager.Core.Entities;
+using StockManager.Core.Options;
+using StockManager.Core.Utils;
 
 namespace StockManager.Core.Repositories
 {
@@ -7,16 +11,64 @@ namespace StockManager.Core.Repositories
     /// </summary>
     public class DatabaseInvestmentTrustHistoryRepository : IInvestmentTrustHistoryRepository
     {
-        /// <inheritdoc />
-        public ValueTask<IEnumerable<InvestmentTrustHistoryEntity>> FetchAsync(TimeSpan? period = null)
+        private readonly MySqlConnection _connection;
+        private readonly IOptionsMonitor<DatabaseOptions> _option;
+
+        /// <summary>
+        ///     新しいインスタンスを作成します。
+        /// </summary>
+        /// <param name="connection">MySQLへのコネクション。</param>
+        public DatabaseInvestmentTrustHistoryRepository(MySqlConnection connection, IOptionsMonitor<DatabaseOptions> option)
         {
-            throw new NotImplementedException();
+            this._connection = connection;
+            this._option = option;
         }
 
         /// <inheritdoc />
-        public ValueTask RegisterAsync(InvestmentTrustHistoryEntity entity)
+        public async ValueTask<IEnumerable<InvestmentTrustHistoryEntity>> FetchAsync(TimeSpan? period = null)
         {
-            throw new NotImplementedException();
+            using var command = this._connection.CreateCommand();
+            var time = DateTime.Now - period;
+            command.CommandText = $"SELECT id, code, name, date, quantity, price, unit, type, memo FROM {this._option.CurrentValue.DatabaseName}.{Constants.InvestmentTrustHistoryTableName} WHERE date >= @time";
+            command.Parameters.Add(new MySqlParameter("@time", time));
+
+            var result = new List<InvestmentTrustHistoryEntity>();
+            using (var reader = await command.ExecuteReaderAsync())
+            {
+                result.Add(
+                    new InvestmentTrustHistoryEntity
+                    {
+                        Index = reader.GetInt32(0),
+                        Code = reader.GetInt32(1),
+                        Name = reader.GetString(2),
+                        Date = reader.GetDateTime(3),
+                        Quantity = reader.GetInt32(4),
+                        Amount = reader.GetDouble(5),
+                        Unit = reader.GetInt32(6),
+                        Type = (TransactionType)reader.GetByte(7),
+                        Memo = reader.GetString(8)
+                    }
+                );
+            }
+
+            return result;
+        }
+
+        /// <inheritdoc />
+        public async ValueTask RegisterAsync(InvestmentTrustHistoryEntity entity)
+        {
+            using var command = this._connection.CreateCommand();
+            command.CommandText = $"INSERT INTO {this._option.CurrentValue.DatabaseName}.{Constants.InvestmentTrustHistoryTableName} (code, name, date, quantity, price, unit, type, memo) VALUES (@code, @name, @date, @quantity, @price, @unit, @type, @memo);";
+            command.Parameters.Add(new MySqlParameter("@code", entity.Code));
+            command.Parameters.Add(new MySqlParameter("@name", entity.Name));
+            command.Parameters.Add(new MySqlParameter("@date", entity.Date));
+            command.Parameters.Add(new MySqlParameter("@quantity", entity.Quantity));
+            command.Parameters.Add(new MySqlParameter("@price", entity.Amount));
+            command.Parameters.Add(new MySqlParameter("@unit", entity.Unit));
+            command.Parameters.Add(new MySqlParameter("@type", entity.Type));
+            command.Parameters.Add(new MySqlParameter("@memo", entity.Memo));
+
+            await command.ExecuteNonQueryAsync();
         }
     }
 }

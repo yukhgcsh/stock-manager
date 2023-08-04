@@ -1,5 +1,56 @@
-﻿<h3>TransactionRegisterDialog</h3>
+﻿@using StockManager.Core.InputModels;
+@using StockManager.Core.Services;
+@using StockManager.Core.Utils;
+
+@inject InvestmentTrustService service;
+
+<MudDialog>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="12" sm="12">
+                <MudForm Model="@Data" @ref="@Form" @bind-IsValid="@IsValid">
+                    <MudTextField T="int" @bind-Value="Data.Code" Label="投資信託コード" Required="true" RequiredError="※必須" />
+                    <MudTextField T="string" @bind-Value="Data.Name" Label="投資信託名" Required="true" RequiredError="※必須" />
+                    <div class="d-flex">
+                        <MudRadioGroup @bind-SelectedOption="Data.Type" T="TransactionType" Required="true" RequiredError="Account type is required!">
+                            <MudRadio Option="@(TransactionType.Buy)">購入</MudRadio>
+                            <MudRadio Option="@(TransactionType.Sell)">売却</MudRadio>
+                        </MudRadioGroup>
+                    </div>
+                    <MudTextField T="int" @bind-Value="Data.Quantity" Label="取引口数" Required="true" RequiredError="※必須" />
+                    <MudTextField T="int" @bind-Value="Data.Unit" Label="購入単位" Required="true" RequiredError="※必須" />
+                    <MudDatePicker @bind-Date="Date" Label="取引日" Required="true" RequiredError="※必須" />
+                    <MudTextField T="double" @bind-Value="Data.Amount" Label="価格" Required="true" RequiredError="※必須" />
+                    <MudTextField T="int" Label="手数料" Required="false" />
+                    <MudTextField T="string" @bind-Value="Data.Memo" Label="メモ" Required="false" />
+                </MudForm>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Close">閉じる</MudButton>
+        <MudButton OnClick="Register" Disabled="@(!IsValid)">登録</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
 
+    InvestmentTrustTransaction Data = new InvestmentTrustTransaction();
+    bool IsValid = true;
+    MudForm? Form;
+    DateTime? Date;
+
+    private async Task Register()
+    {
+        this.Data.Date = Date!.Value;
+        await service.RegisterInvestmentTrustAsync(this.Data);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
 }

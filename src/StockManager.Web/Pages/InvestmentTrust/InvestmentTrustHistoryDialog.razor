@@ -1,7 +1,50 @@
 ﻿@using StockManager.Core.OutputModels;
-<h3>InvestmentTrustHistoryDialog</h3>
+@using StockManager.Core.Utils;
+
+<MudDialog>
+    <DialogContent>
+        <MudDataGrid T="InvestmentTrustInfo.History" Items="@TrustInfo.Histories.OrderByDescending(x => x.Date)" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow" SortMode="SortMode.Single">
+            <Columns>
+                <PropertyColumn Property="x => GetActionType(x.Type)" />
+                <PropertyColumn Property="x => x!.Date" Title="取引日" />
+                <PropertyColumn Property="x => x!.Amount" Title="価格" />
+                <PropertyColumn Property="x => x!.Quantity" Title="口数" />
+                <PropertyColumn Property="x => x!.Unit" Title="購入単位" />
+                <PropertyColumn Property="x => x!.Commission" Title="手数料" />
+                <PropertyColumn Property="x => x!.Memo" Title="メモ" />
+            </Columns>
+        </MudDataGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Close">閉じる</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+
     [Parameter]
     public InvestmentTrustInfo TrustInfo { get; set; } = null!;
+
+    private string GetActionType(TransactionType type)
+    {
+        if (type == TransactionType.Buy)
+        {
+            return "購入";
+        }
+        else if (type == TransactionType.Sell)
+        {
+            return "売却";
+        }
+        else
+        {
+            return "分配金";
+        }
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
 }

@@ -24,16 +24,21 @@
     </MudCard>
 </MudStack>
 
-<RadzenChart>
-    <RadzenLineSeries Smooth=false Data="@this.CapitalData" CategoryProperty="Date" Title="元手" ValueProperty="Capital">
-        <RadzenMarkers MarkerType="MarkerType.Circle" />
-        <RadzenCategoryAxis Formatter="@FormatAsDate"></RadzenCategoryAxis>
-        <RadzenValueAxis Min="0" Step="1_000_000">
-            <RadzenGridLines Visible="true" />
-            <RadzenAxisTitle Text="元手の推移"></RadzenAxisTitle>
-        </RadzenValueAxis>
-    </RadzenLineSeries>
-</RadzenChart>
+@if (this.CapitalData != null && this.CapitalData.Count > 0)
+{
+    <MudPaper>
+        <RadzenChart>
+            <RadzenLineSeries Smooth=false Data="@this.CapitalData" CategoryProperty="Date" Title="元手" ValueProperty="Capital">
+                <RadzenMarkers MarkerType="MarkerType.Circle" />
+                <RadzenCategoryAxis Formatter="@FormatAsDate"></RadzenCategoryAxis>
+                <RadzenValueAxis Min="0" Step="500_000" Max="@this.CapitalData.Max(x => x.Capital)" Formatter="@FormatCapital">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="元手の推移"></RadzenAxisTitle>
+                </RadzenValueAxis>
+            </RadzenLineSeries>
+        </RadzenChart>
+    </MudPaper>
+}
 
 @code {
     int Capital = 100;
@@ -45,6 +50,8 @@
         this.CapitalData = await fundsService.FetchFundsTransitionsAsync();
     }
 
+    private string FormatCapital(object value)
+        => ((double)value).ToString("#,0");
 
     private string FormatAsDate(object value)
         => ((DateTime)value).ToShortDateString();
