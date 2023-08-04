@@ -28,27 +28,37 @@ namespace StockManager.Core.Repositories
         public async ValueTask<IEnumerable<InvestmentTrustHistoryEntity>> FetchAsync(TimeSpan? period = null)
         {
             using var command = this._connection.CreateCommand();
-            var time = DateTime.Now - period;
-            command.CommandText = $"SELECT id, code, name, date, quantity, price, unit, type, memo FROM {this._option.CurrentValue.DatabaseName}.{Constants.InvestmentTrustHistoryTableName} WHERE date >= @time";
-            command.Parameters.Add(new MySqlParameter("@time", time));
+            if (period == null)
+            {
+                command.CommandText = $"SELECT id, code, name, date, quantity, price, unit, type, memo FROM {this._option.CurrentValue.DatabaseName}.{Constants.InvestmentTrustHistoryTableName};";
+            }
+            else
+            {
+                var time = DateTime.Now - period;
+                command.CommandText = $"SELECT id, code, name, date, quantity, price, unit, type, memo FROM {this._option.CurrentValue.DatabaseName}.{Constants.InvestmentTrustHistoryTableName} WHERE date >= @time;";
+                command.Parameters.Add(new MySqlParameter("@time", time));
+            }
 
             var result = new List<InvestmentTrustHistoryEntity>();
             using (var reader = await command.ExecuteReaderAsync())
             {
-                result.Add(
-                    new InvestmentTrustHistoryEntity
-                    {
-                        Index = reader.GetInt32(0),
-                        Code = reader.GetInt32(1),
-                        Name = reader.GetString(2),
-                        Date = reader.GetDateTime(3),
-                        Quantity = reader.GetInt32(4),
-                        Amount = reader.GetDouble(5),
-                        Unit = reader.GetInt32(6),
-                        Type = (TransactionType)reader.GetByte(7),
-                        Memo = reader.GetString(8)
-                    }
-                );
+                while (reader.Read())
+                {
+                    result.Add(
+                        new InvestmentTrustHistoryEntity
+                        {
+                            Index = reader.GetInt32(0),
+                            Code = reader.GetInt32(1),
+                            Name = reader.GetString(2),
+                            Date = reader.GetDateTime(3),
+                            Quantity = reader.GetInt32(4),
+                            Amount = reader.GetDouble(5),
+                            Unit = reader.GetInt32(6),
+                            Type = (TransactionType)reader.GetByte(7),
+                            Memo = reader.GetString(8)
+                        }
+                    );
+                }
             }
 
             return result;
