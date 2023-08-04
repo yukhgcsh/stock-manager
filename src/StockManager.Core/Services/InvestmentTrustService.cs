@@ -29,6 +29,13 @@ namespace StockManager.Core.Services
             this._mapper = mapper;
         }
 
+        public async ValueTask<IList<InvestmentTrustTransactionHistory>> FetchInvestmentTrustAsync()
+        {
+            await this._transactionManager.OpenAsync();
+            var histories = await this._historyRepository.FetchAsync();
+            return histories.Select(x => this._mapper.Map<InvestmentTrustHistoryEntity, InvestmentTrustTransactionHistory>(x)).OrderByDescending(x => x.Date).ToList();
+        }
+
         /// <summary>
         ///     投資信託の一覧を取得します。
         /// </summary>

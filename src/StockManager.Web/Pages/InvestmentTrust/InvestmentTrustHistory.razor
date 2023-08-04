@@ -1,7 +1,48 @@
 ﻿@page "/investmentTrustHistory"
+@using StockManager.Core.OutputModels;
+@using StockManager.Core.Services;
+@using StockManager.Core.Utils;
 
-<h3>Comming Soon...</h3>
+@inject InvestmentTrustService service;
+
+<MudDataGrid T="InvestmentTrustTransactionHistory" Items="@Histories" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
+    <ToolBarContent>
+        <MudText Typo="Typo.h4">株式取引履歴</MudText>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => GetTransactionType(x!.Type)" />
+        <PropertyColumn Property="x => x!.Code" Filterable="false" Title="投資信託コード" />
+        <PropertyColumn Property="x => x!.Name" Title="投資信託名" />
+        <PropertyColumn Property="x => x!.Date" Title="日付" />
+        <PropertyColumn Property="x => x!.Quantity" Title="取引口数" />
+        <PropertyColumn Property="x => x!.Unit" Title="取引単位" />
+        <PropertyColumn Property="x => x!.Amount" Title="取引単価/分配金" />
+        <PropertyColumn Property="x => x!.Memo" Title="メモ" />
+    </Columns>
+</MudDataGrid>
+
 
 @code {
+    IList<InvestmentTrustTransactionHistory> Histories = new List<InvestmentTrustTransactionHistory>();
 
+    protected override async Task OnInitializedAsync()
+    {
+        this.Histories = await service.FetchInvestmentTrustAsync();
+    }
+
+    private string GetTransactionType(TransactionType type)
+    {
+        if (type == TransactionType.Buy)
+        {
+            return "購入";
+        }
+        else if (type == TransactionType.Sell)
+        {
+            return "売却";
+        }
+        else
+        {
+            return "分配金";
+        }
+    }
 }

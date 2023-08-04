@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using StockManager.Core.Entities;
 using StockManager.Core.InputModels;
+using StockManager.Core.OutputModels;
 using StockManager.Core.Repositories;
 using StockManager.Core.Transactions;
 using StockManager.Core.Utils;
+using System.Reflection.Metadata.Ecma335;
 
 namespace StockManager.Core.Services
 {
@@ -29,6 +31,24 @@ namespace StockManager.Core.Services
             this._stockHistoryRepository = stockHistoryRepository;
             this._tradesTransactionManager = transactionManager;
             this._mapper = mapper;
+        }
+
+        /// <summary>
+        ///     株式の取引履歴を取得します。
+        /// </summary>
+        /// <returns>非同期処理の状態。値は株式の取引履歴の一覧です。</returns>
+        public async ValueTask<IList<StockTransactionHistory>> FetchStockTransactionHistoryAsync()
+        {
+            await this._tradesTransactionManager.OpenAsync();
+            var histories = await this._stockHistoryRepository.FetchHistoryAsync();
+            var codes = await this._stockRepository.GetStockCodesAsync();
+            var codeDictionary = codes.ToDictionary(x => x.Code, x => x.Name);
+            return histories.Select(x =>
+            {
+                var history = this._mapper.Map<StockTransactionHistoryEntity, StockTransactionHistory>(x);
+                history.Name = codeDictionary[history.Code];
+                return history;
+            }).OrderByDescending(x => x.Date).ToList();
         }
 
         /// <summary>
