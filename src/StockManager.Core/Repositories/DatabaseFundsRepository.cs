@@ -95,7 +95,7 @@ namespace StockManager.Core.Repositories
             using var command = new MySqlCommand();
             command.Connection = this._connection;
 
-            command.CommandText = $"INSERT INTO {this._option.CurrentValue.DatabaseName}.{Constants.FundsTableName} (date, amount, memo, type) VALUES(@date, @amount, @memo, @type);";
+            command.CommandText = $"INSERT INTO {this._option.CurrentValue.DatabaseName}.{Constants.FundsHistoryTableName} (date, amount, memo, type) VALUES(@date, @amount, @memo, @type);";
             command.Parameters.Add(new MySqlParameter("@date", entity.Date));
             command.Parameters.Add(new MySqlParameter("@amount", entity.Amount));
             command.Parameters.Add(new MySqlParameter("@memo", entity.Memo));
