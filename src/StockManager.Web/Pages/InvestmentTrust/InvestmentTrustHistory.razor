@@ -5,6 +5,8 @@
 
 @inject InvestmentTrustService service;
 
+<PageTitle>投資信託取引履歴</PageTitle>
+
 <MudDataGrid T="InvestmentTrustTransactionHistory" Items="@Histories" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
     <ToolBarContent>
         <MudText Typo="Typo.h4">株式取引履歴</MudText>

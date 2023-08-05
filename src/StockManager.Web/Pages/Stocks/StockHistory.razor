@@ -5,7 +5,9 @@
 
 @inject StockTransactionService service;
 
-<MudDataGrid T="StockTransactionHistory" Items="@Histories" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
+<PageTitle>株式取引履歴</PageTitle>
+
+<MudDataGrid Class="mb-2" T="StockTransactionHistory" Items="@Histories" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
     <ToolBarContent>
         <MudText Typo="Typo.h4">株式取引履歴</MudText>
     </ToolBarContent>

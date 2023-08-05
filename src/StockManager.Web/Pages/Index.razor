@@ -8,7 +8,7 @@
 
 <PageTitle>ダッシュボード</PageTitle>
 
-<MudStack Row="true" AlignItems="AlignItems.Start" Spacing="3">
+<MudStack Class="mb-2" Row="true" AlignItems="AlignItems.Start" Spacing="3">
     <MudCard>
         <MudCardHeader>
             <MudText Typo="Typo.h5">元手</MudText>
@@ -51,7 +51,7 @@
     </MudCard>
 </MudStack>
 
-<MudDataGrid T="HoldingStock" Items="@HoldingStock" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
+<MudDataGrid Class="mb-2" T="HoldingStock" Items="@HoldingStock" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
     <ToolBarContent>
         <MudText Typo="Typo.h4">保有株式</MudText>
     </ToolBarContent>
@@ -64,7 +64,7 @@
     </Columns>
 </MudDataGrid>
 
-<MudDataGrid T="StockTransactionHistory" Items="@TransactionHistory" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
+<MudDataGrid Class="mb-2" T="StockTransactionHistory" Items="@TransactionHistory" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
     <ToolBarContent>
         <MudText Typo="Typo.h4">過去30日の取引</MudText>
     </ToolBarContent>

@@ -6,14 +6,15 @@
 @inject StockService stockService;
 @inject IDialogService dialogService;
 
+<PageTitle>株式投資</PageTitle>
 
-<MudButton @onclick="OpenTransactionRegister" Variant="Variant.Outlined" Color="Color.Info">
+<MudButton Class="mb-2" @onclick="OpenTransactionRegister" Variant="Variant.Outlined" Color="Color.Info">
     株式売買登録
 </MudButton>
-<MudButton @onclick="OpenDividendRegister" Variant="Variant.Outlined" Color="Color.Info">
+<MudButton Class="mb-2" @onclick="OpenDividendRegister" Variant="Variant.Outlined" Color="Color.Info">
     配当登録
 </MudButton>
-<MudDataGrid T="StockInfo" Items="@Stocks" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
+<MudDataGrid Class="mb-2" T="StockInfo" Items="@Stocks" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
     <ToolBarContent>
         <MudText Typo="Typo.h4">証券一覧</MudText>
     </ToolBarContent>
