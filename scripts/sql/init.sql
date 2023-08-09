@@ -1,3 +1,7 @@
+CREATE DATABASE stock_db;
+
+USE stock_db;
+
 CREATE TABLE IF NOT EXISTS stock_db.funds_history
 (id int auto_increment, date DATE, amount int, memo varchar(1024), type tinyint, index(id));
 

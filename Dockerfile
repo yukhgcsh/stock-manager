@@ -7,10 +7,9 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["StockManager.Web.csproj", "."]
-RUN dotnet restore "./StockManager.Web.csproj"
 COPY . .
-WORKDIR "/src/."
+WORKDIR /src/StockManager.Web
+RUN dotnet restore "StockManager.Web.csproj"
 RUN dotnet build "StockManager.Web.csproj" -c Release -o /app/build
 
 FROM build AS publish
