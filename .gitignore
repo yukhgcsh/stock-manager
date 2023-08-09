@@ -145,3 +145,9 @@ $RECYCLE.BIN/
 
 .vs/
 **/launchSettings.json
+
+# ビルド成果物を加えない
+dist/*
+
+# ビルドスクリプトは構成管理対象
+!/scripts/build/
