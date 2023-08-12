@@ -17,6 +17,7 @@ namespace StockManager.Core.Repositories
                         Code = 1234,
                         Date = new DateTime(2022, 1, 2),
                         Amount = 1000,
+                        IsNisa = true,
                     }
                 }
             }
@@ -29,7 +30,8 @@ namespace StockManager.Core.Repositories
                 Code = 1234,
                 BoughtDate = new DateTime(2022, 1, 2),
                 SoldDate = new DateTime(2022, 1, 4),
-                Profit = 10000
+                Profit = 10000,
+                IsNisa = true
             },
             new SoldStockEntity
             {
@@ -37,7 +39,8 @@ namespace StockManager.Core.Repositories
                 Code = 5678,
                 BoughtDate = new DateTime(2022, 10, 1),
                 SoldDate = new DateTime(2022, 12, 3),
-                Profit = 9000
+                Profit = 9000,
+                IsNisa = false
             },
             new SoldStockEntity
             {
@@ -45,7 +48,8 @@ namespace StockManager.Core.Repositories
                 Code = 9876,
                 BoughtDate = new DateTime(2022, 10, 1),
                 SoldDate = new DateTime(2023, 3, 3),
-                Profit = -2000
+                Profit = -2000,
+                IsNisa = false
             },
             new SoldStockEntity
             {
@@ -53,7 +57,8 @@ namespace StockManager.Core.Repositories
                 Code = 5432,
                 BoughtDate = new DateTime(2022, 10, 1),
                 SoldDate = new DateTime(2023, 6, 27),
-                Profit = 12000
+                Profit = 12000,
+                IsNisa = false
             }
         };
 
@@ -129,7 +134,7 @@ namespace StockManager.Core.Repositories
         }
 
         /// <inheritdoc />
-        public ValueTask SellStockAsync(int code, DateTime date, int quantity, double amount)
+        public ValueTask SellStockAsync(int code, DateTime date, int quantity, double amount, bool isNisa)
         {
             if (!this._holdingStocks.TryGetValue(code, out var target))
             {
@@ -153,7 +158,8 @@ namespace StockManager.Core.Repositories
                         Quantity = transaction.Quantity,
                         BoughtDate = transaction.Date,
                         Profit = (int)(transaction.Amount - amount) * transaction.Quantity,
-                        SoldDate = date
+                        SoldDate = date,
+                        IsNisa = isNisa
                     };
                     this._soldStocks.Add(entity);
                     restQuantity -= transaction.Quantity;
@@ -167,7 +173,8 @@ namespace StockManager.Core.Repositories
                         Quantity = restQuantity,
                         BoughtDate = transaction.Date,
                         Profit = (int)(transaction.Amount - amount) * restQuantity,
-                        SoldDate = date
+                        SoldDate = date,
+                        IsNisa = isNisa
                     };
                     this._soldStocks.Add(entity);
                     transaction.Quantity -= restQuantity;

@@ -46,7 +46,8 @@ namespace StockManager.Core.Repositories
         /// <param name="date">売却日付。</param>
         /// <param name="quantity">売却株数。</param>
         /// <param name="amount">売却金額。</param>
+        /// <param name="isNisa">NISAかどうか。</param>
         /// <returns>非同期処理の状態。</returns>
-        public ValueTask SellStockAsync(int code, DateTime date, int quantity, double amount);
+        public ValueTask SellStockAsync(int code, DateTime date, int quantity, double amount, bool isNisa);
     }
 }

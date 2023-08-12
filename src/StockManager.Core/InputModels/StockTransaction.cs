@@ -41,5 +41,10 @@ namespace StockManager.Core.InputModels
         ///     株式の売買の場合は単価、配当の場合は合計額を取得または設定します。
         /// </summary>
         public double Amount { get; set; }
+
+        /// <summary>
+        ///     NISAかどうかを取得または設定します。
+        /// </summary>
+        public bool IsNisa { get; set; }
     }
 }

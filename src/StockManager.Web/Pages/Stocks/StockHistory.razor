@@ -17,6 +17,7 @@
         <PropertyColumn Property="x => x!.Name" Title="銘柄名" />
         <PropertyColumn Property="x => x!.Date" Title="日付" />
         <PropertyColumn Property="x => x!.Quantity" Title="取引株数" />
+        <PropertyColumn Property="x => GetNisaLabel(x!.IsNisa)" Title="預かり種別" />
         <PropertyColumn Property="x => x!.Amount" Title="取引単価/配当" />
         <PropertyColumn Property="x => x!.Commission" title="手数料" />
         <PropertyColumn Property="x => x!.Memo" Title="メモ" />
@@ -44,6 +45,18 @@
         else
         {
             return "配当";
+        }
+    }
+
+    private string GetNisaLabel(bool isNisa)
+    {
+        if (isNisa)
+        {
+            return "NISA預り";
+        }
+        else
+        {
+            return "一般預かり";
         }
     }
 }

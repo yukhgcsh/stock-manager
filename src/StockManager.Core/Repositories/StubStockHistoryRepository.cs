@@ -17,7 +17,8 @@ namespace StockManager.Core.Repositories
                 Date = new DateTime(2022, 1, 2),
                 Memo = "購入",
                 Amount = 1000,
-                Type = TransactionType.Buy
+                Type = TransactionType.Buy,
+                IsNisa = true
             },
             new StockTransactionHistoryEntity
             {
@@ -27,7 +28,8 @@ namespace StockManager.Core.Repositories
                 Date = new DateTime(2022, 1, 4),
                 Amount = 1100,
                 Type = TransactionType.Sell,
-                Memo = "利確のため半分売却"
+                Memo = "利確のため半分売却",
+                IsNisa = true
             },
             new StockTransactionHistoryEntity
             {
@@ -37,7 +39,8 @@ namespace StockManager.Core.Repositories
                 Date = new DateTime(2022, 10 ,1),
                 Memo = "購入",
                 Type = TransactionType.Buy,
-                Amount = 600
+                Amount = 600,
+                IsNisa = true
             },
             new StockTransactionHistoryEntity
             {
@@ -47,7 +50,8 @@ namespace StockManager.Core.Repositories
                 Date = new DateTime(2022, 10, 1),
                 Memo = "購入",
                 Type = TransactionType.Buy,
-                Amount = 400
+                Amount = 400,
+                IsNisa = false
             },
             new StockTransactionHistoryEntity
             {
@@ -58,6 +62,7 @@ namespace StockManager.Core.Repositories
                 Memo = "購入",
                 Amount= 1200,
                 Type = TransactionType.Buy,
+                IsNisa = false
             },
             new StockTransactionHistoryEntity
             {
@@ -68,6 +73,7 @@ namespace StockManager.Core.Repositories
                 Memo = "利確のため全部売却",
                 Amount = 630,
                 Type = TransactionType.Sell,
+                IsNisa = true
             },
             new StockTransactionHistoryEntity
             {
@@ -77,7 +83,8 @@ namespace StockManager.Core.Repositories
                 Date = new DateTime(2023, 3, 3),
                 Memo = "損切のため売却",
                 Amount = 395,
-                Type = TransactionType.Sell
+                Type = TransactionType.Sell,
+                IsNisa = false
             },
             new StockTransactionHistoryEntity
             {
@@ -87,7 +94,8 @@ namespace StockManager.Core.Repositories
                 Amount = 3000,
                 Memo = "-",
                 Quantity = 200,
-                Type = TransactionType.Dividend
+                Type = TransactionType.Dividend,
+                IsNisa = false
             },
             new StockTransactionHistoryEntity
             {
@@ -97,7 +105,8 @@ namespace StockManager.Core.Repositories
                 Date = new DateTime(2023, 6, 27),
                 Memo = "利確のため売却",
                 Type= TransactionType.Sell,
-                Amount = 1260
+                Amount = 1260,
+                IsNisa = false
             }
         };
 

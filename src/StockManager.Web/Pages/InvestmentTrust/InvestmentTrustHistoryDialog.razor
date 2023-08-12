@@ -10,6 +10,7 @@
                 <PropertyColumn Property="x => x!.Amount" Title="価格" />
                 <PropertyColumn Property="x => x!.Quantity" Title="口数" />
                 <PropertyColumn Property="x => x!.Unit" Title="購入単位" />
+                <PropertyColumn Property="x => GetNisaLabel(x!.IsNisa)" Title="預かり種別" />
                 <PropertyColumn Property="x => x!.Commission" Title="手数料" />
                 <PropertyColumn Property="x => x!.Memo" Title="メモ" />
             </Columns>
@@ -40,6 +41,18 @@
         else
         {
             return "分配金";
+        }
+    }
+
+    private string GetNisaLabel(bool isNisa)
+    {
+        if (isNisa)
+        {
+            return "NISA預り";
+        }
+        else
+        {
+            return "一般預かり";
         }
     }
 

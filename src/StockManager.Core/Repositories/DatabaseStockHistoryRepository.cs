@@ -28,12 +28,12 @@ namespace StockManager.Core.Repositories
 
             if (period == null)
             {
-                command.CommandText = $"SELECT id, code, date, quantity, price, type, memo FROM {this._option.CurrentValue.DatabaseName}.{Constants.StockTransactionHistoryTableName};";
+                command.CommandText = $"SELECT id, code, date, quantity, price, type, is_nisa, memo FROM {this._option.CurrentValue.DatabaseName}.{Constants.StockTransactionHistoryTableName};";
             }
             else
             {
                 var time = DateTime.Now - period;
-                command.CommandText = $"SELECT id, code, date, quantity, price, type, memo FROM {this._option.CurrentValue.DatabaseName}.{Constants.StockTransactionHistoryTableName} WHERE date >= @time;";
+                command.CommandText = $"SELECT id, code, date, quantity, price, type, is_nisa, memo FROM {this._option.CurrentValue.DatabaseName}.{Constants.StockTransactionHistoryTableName} WHERE date >= @time;";
                 command.Parameters.Add(new MySqlParameter("@time", time));
             }
             using var reader = await command.ExecuteReaderAsync();
@@ -50,7 +50,8 @@ namespace StockManager.Core.Repositories
                         Quantity = reader.GetInt32(3),
                         Amount = reader.GetDouble(4),
                         Type = (TransactionType)reader.GetByte(5),
-                        Memo = reader.GetString(6),
+                        IsNisa = reader.GetBoolean(6),
+                        Memo = reader.GetString(7),
                     }
                 );
             }
@@ -64,12 +65,13 @@ namespace StockManager.Core.Repositories
             using var command = new MySqlCommand();
             command.Connection = this._connection;
 
-            command.CommandText = $"INSERT INTO {this._option.CurrentValue.DatabaseName}.{Constants.StockTransactionHistoryTableName} (code, date, quantity, price, type, memo) VALUES (@code, @date, @quantity, @price, @type, @memo);";
+            command.CommandText = $"INSERT INTO {this._option.CurrentValue.DatabaseName}.{Constants.StockTransactionHistoryTableName} (code, date, quantity, price, type, is_nisa, memo) VALUES (@code, @date, @quantity, @price, @type, @is_nisa, @memo);";
             command.Parameters.Add(new MySqlParameter("@code", transaction.Code));
             command.Parameters.Add(new MySqlParameter("@date", transaction.Date));
             command.Parameters.Add(new MySqlParameter("@quantity", transaction.Quantity));
             command.Parameters.Add(new MySqlParameter("@price", transaction.Amount));
             command.Parameters.Add(new MySqlParameter("@type", transaction.Type));
+            command.Parameters.Add(new MySqlParameter("@is_nisa", transaction.IsNisa));
             command.Parameters.Add(new MySqlParameter("@memo", transaction.Memo));
             await command.ExecuteNonQueryAsync();
         }

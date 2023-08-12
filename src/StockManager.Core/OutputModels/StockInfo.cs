@@ -36,17 +36,40 @@ namespace StockManager.Core.OutputModels
 
         public class History
         {
+            /// <summary>
+            ///     メモを取得または設定します。
+            /// </summary>
             public string? Memo { get; set; }
 
+            /// <summary>
+            ///     取引種別を取得または設定します。
+            /// </summary>
             public TransactionType Type { get; set; }
 
+            /// <summary>
+            ///     取引日付を取得または設定します。
+            /// </summary>
             public DateTime Date { get; set; }
 
+            /// <summary>
+            ///     取引額を取得または設定します。
+            /// </summary>
             public double Amount { get; set; }
 
+            /// <summary>
+            ///     取引株数を取得または設定します。
+            /// </summary>
             public int Quantity { get; set; }
 
+            /// <summary>
+            ///     取引手数料を取得または設定します。
+            /// </summary>
             public int Commission { get; set; }
+
+            /// <summary>
+            ///     NISAかどうかを取得または設定します。
+            /// </summary>
+            public bool IsNisa { get; set; }
         }
     }
 }

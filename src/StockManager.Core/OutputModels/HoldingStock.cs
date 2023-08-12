@@ -26,5 +26,10 @@
         ///     取得株の単価を取得または設定します。
         /// </summary>
         public double Amount { get; set; }
+
+        /// <summary>
+        ///     NISAかどうかを取得または設定します。
+        /// </summary>
+        public bool IsNisa { get; set; }
     }
 }

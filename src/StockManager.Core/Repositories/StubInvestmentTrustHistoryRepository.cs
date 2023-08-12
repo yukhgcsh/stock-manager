@@ -16,6 +16,7 @@ namespace StockManager.Core.Repositories
                 Quantity = 12,
                 Unit = 10_000,
                 Type = Utils.TransactionType.Buy,
+                IsNisa = true,
                 Memo = "欲張ってみた"
             },
             new InvestmentTrustHistoryEntity
@@ -28,6 +29,7 @@ namespace StockManager.Core.Repositories
                 Quantity = 9,
                 Unit = 1,
                 Type = Utils.TransactionType.Buy,
+                IsNisa = false,
                 Memo = "安定志向"
             },
             new InvestmentTrustHistoryEntity
@@ -40,6 +42,7 @@ namespace StockManager.Core.Repositories
                 Quantity = 9,
                 Unit = 1,
                 Type = Utils.TransactionType.Sell,
+                IsNisa = false,
                 Memo = "結構上がったので売却"
             },
             new InvestmentTrustHistoryEntity
@@ -52,6 +55,7 @@ namespace StockManager.Core.Repositories
                 Quantity = 12,
                 Unit = 10_000,
                 Type = Utils.TransactionType.Dividend,
+                IsNisa = true,
                 Memo = "-"
             },
         };

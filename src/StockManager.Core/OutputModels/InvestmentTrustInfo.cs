@@ -71,6 +71,11 @@ namespace StockManager.Core.OutputModels
             ///     手数料を取得または設定します。
             /// </summary>
             public int Commission { get; set; }
+
+            /// <summary>
+            ///     NISAかどうかを取得または設定します。
+            /// </summary>
+            public bool IsNisa { get; set; }
         }
     }
 }

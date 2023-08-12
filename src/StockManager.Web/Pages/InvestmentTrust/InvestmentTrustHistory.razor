@@ -18,6 +18,7 @@
         <PropertyColumn Property="x => x!.Date" Title="日付" />
         <PropertyColumn Property="x => x!.Quantity" Title="取引口数" />
         <PropertyColumn Property="x => x!.Unit" Title="取引単位" />
+        <PropertyColumn Property="x => GetNisaLabel(x!.IsNisa)" Title="預かり種別" />
         <PropertyColumn Property="x => x!.Amount" Title="取引単価/分配金" />
         <PropertyColumn Property="x => x!.Memo" Title="メモ" />
     </Columns>
@@ -30,6 +31,18 @@
     protected override async Task OnInitializedAsync()
     {
         this.Histories = await service.FetchInvestmentTrustAsync();
+    }
+
+    private string GetNisaLabel(bool isNisa)
+    {
+        if (isNisa)
+        {
+            return "NISA預り";
+        }
+        else
+        {
+            return "一般預かり";
+        }
     }
 
     private string GetTransactionType(TransactionType type)

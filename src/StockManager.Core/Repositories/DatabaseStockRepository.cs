@@ -27,11 +27,12 @@ namespace StockManager.Core.Repositories
             using var command = new MySqlCommand();
             command.Connection = this._connection;
 
-            command.CommandText = $"INSERT INTO {this._option.CurrentValue.DatabaseName}.{Constants.HoldingStockTableName} (code, date, quantity, price) VALUES (@code, @date, @quantity, @price);";
+            command.CommandText = $"INSERT INTO {this._option.CurrentValue.DatabaseName}.{Constants.HoldingStockTableName} (code, date, quantity, price, is_nisa) VALUES (@code, @date, @quantity, @price, @is_nisa);";
             command.Parameters.Add(new MySqlParameter("@code", entity.Code));
             command.Parameters.Add(new MySqlParameter("@date", entity.Date));
             command.Parameters.Add(new MySqlParameter("@quantity", entity.Quantity));
             command.Parameters.Add(new MySqlParameter("@price", entity.Amount));
+            command.Parameters.Add(new MySqlParameter("@is_nisa", entity.IsNisa));
             await command.ExecuteNonQueryAsync();
         }
 
@@ -41,7 +42,7 @@ namespace StockManager.Core.Repositories
             using var selectCommand = new MySqlCommand();
             selectCommand.Connection = this._connection;
 
-            selectCommand.CommandText = $"SELECT id, code, date, quantity, price FROM {this._option.CurrentValue.DatabaseName}.{Constants.HoldingStockTableName};";
+            selectCommand.CommandText = $"SELECT id, code, date, quantity, price, is_nisa FROM {this._option.CurrentValue.DatabaseName}.{Constants.HoldingStockTableName};";
             using var reader = await selectCommand.ExecuteReaderAsync();
             var holdingStocks = new List<HoldingStockEntity>();
 
@@ -55,6 +56,7 @@ namespace StockManager.Core.Repositories
                         Date = reader.GetDateTime(2),
                         Quantity = reader.GetInt32(3),
                         Amount = reader.GetDouble(4),
+                        IsNisa = reader.GetBoolean(5),
                     }
                 );
             }
@@ -68,7 +70,7 @@ namespace StockManager.Core.Repositories
             using var selectCommand = new MySqlCommand();
             selectCommand.Connection = this._connection;
 
-            selectCommand.CommandText = $"SELECT id, code, bought_date, sold_date, quantity, profit  FROM {this._option.CurrentValue.DatabaseName}.{Constants.SoldStockTableName};";
+            selectCommand.CommandText = $"SELECT id, code, bought_date, sold_date, quantity, profit, is_nisa  FROM {this._option.CurrentValue.DatabaseName}.{Constants.SoldStockTableName};";
             using var reader = await selectCommand.ExecuteReaderAsync();
             var soldStocks = new List<SoldStockEntity>();
 
@@ -83,6 +85,7 @@ namespace StockManager.Core.Repositories
                         SoldDate = reader.GetDateTime(3),
                         Quantity = reader.GetInt32(4),
                         Profit = reader.GetInt32(5),
+                        IsNisa = reader.GetBoolean(6)
                     }
                 );
             }
@@ -114,7 +117,7 @@ namespace StockManager.Core.Repositories
         }
 
         /// <inheritdoc />
-        public async ValueTask SellStockAsync(int code, DateTime date, int quantity, double price)
+        public async ValueTask SellStockAsync(int code, DateTime date, int quantity, double price, bool isNisa)
         {
             var holdingStocks = await this.GetHoldingStocksAsync();
 
@@ -126,12 +129,13 @@ namespace StockManager.Core.Repositories
                     using var insertCommand = new MySqlCommand();
                     insertCommand.Connection = this._connection;
 
-                    insertCommand.CommandText = $"INSERT INTO {this._option.CurrentValue.DatabaseName}.{Constants.SoldStockTableName} (code, bought_date, sold_date, quantity, profit) VALUES (@code, @bought_date, @sold_date, @quantity, @profit);";
+                    insertCommand.CommandText = $"INSERT INTO {this._option.CurrentValue.DatabaseName}.{Constants.SoldStockTableName} (code, bought_date, sold_date, quantity, profit, is_nisa) VALUES (@code, @bought_date, @sold_date, @quantity, @profit, @is_nisa);";
                     insertCommand.Parameters.Add(new MySqlParameter("@code", code));
                     insertCommand.Parameters.Add(new MySqlParameter("@bought_date", holdingStock.Date));
                     insertCommand.Parameters.Add(new MySqlParameter("@sold_date", date));
                     insertCommand.Parameters.Add(new MySqlParameter("@quantity", quantity));
                     insertCommand.Parameters.Add(new MySqlParameter("@profit", (price - holdingStock.Amount) * restQuantity));
+                    insertCommand.Parameters.Add(new MySqlParameter("@is_nisa", isNisa));
                     await insertCommand.ExecuteNonQueryAsync();
                     break;
                 }
@@ -146,6 +150,7 @@ namespace StockManager.Core.Repositories
                     insertCommand.Parameters.Add(new MySqlParameter("@sold_date", date));
                     insertCommand.Parameters.Add(new MySqlParameter("@quantity", quantity));
                     insertCommand.Parameters.Add(new MySqlParameter("@profit", (price - holdingStock.Amount) * holdingStock.Quantity));
+                    insertCommand.Parameters.Add(new MySqlParameter("@is_nisa", isNisa));
                     await insertCommand.ExecuteNonQueryAsync();
                     restQuantity -= holdingStock.Quantity;
                 }

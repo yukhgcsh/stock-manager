@@ -23,6 +23,7 @@ namespace StockManager.Core.Utils
             CreateMap<StockTransactionHistoryEntity, StockInfo.History>();
             CreateMap<InvestmentTrustTransaction, InvestmentTrustHistoryEntity>();
             CreateMap<InvestmentTrustHistoryEntity, InvestmentTrustInfo.History>();
+            CreateMap<InvestmentTrustHistoryEntity, InvestmentTrustTransactionHistory>();
             CreateMap<FundsHistory, FundsHistoryEntity>();
         }
     }

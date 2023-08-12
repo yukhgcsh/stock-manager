@@ -43,5 +43,10 @@ namespace StockManager.Core.InputModels
         ///     メモを取得または設定します。
         /// </summary>
         public string? Memo { get; set; }
+
+        /// <summary>
+        ///     NISAかどうかを取得または設定します。
+        /// </summary>
+        public bool IsNisa { get; set; }
     }
 }

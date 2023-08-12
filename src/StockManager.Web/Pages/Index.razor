@@ -60,6 +60,7 @@
         <PropertyColumn Property="x => x!.Name" Title="銘柄名" />
         <PropertyColumn Property="x => x!.Quantity" Title="数" />
         <PropertyColumn Property="x => x!.Amount" Title="単価" />
+        <PropertyColumn Property="x => GetNisaLabel(x!.IsNisa)" Title="預かり種別" />
         <PropertyColumn Property="x => x!.Date.ToShortDateString()" Title="購入日" />
     </Columns>
 </MudDataGrid>
@@ -75,6 +76,7 @@
         <PropertyColumn Property="x => x!.Type == TransactionType.Buy ? Buy: Sell" Title="購入/売却" />
         <PropertyColumn Property="x => x!.Date.ToShortDateString()" Title="取引日" />
         <PropertyColumn Property="x => x!.Amount" Title="価格" />
+        <PropertyColumn Property="x => GetNisaLabel(x!.IsNisa)" Title="預かり種別" />
         <PropertyColumn Property="x => x!.Commission" Title="手数料" />
         <PropertyColumn Property="x => x!.Memo" Title="メモ" />
     </Columns>
@@ -94,5 +96,17 @@
         this.ProfitAndLoss = await dashboardService.GetProfitAndLossAsync().ConfigureAwait(false);
         this.HoldingStock = await dashboardService.GetHoldingStockAsync().ConfigureAwait(false);
         this.TransactionHistory = await dashboardService.FetchTransactionHistoryAsync(TimeSpan.FromDays(30)).ConfigureAwait(false);
+    }
+
+    private string GetNisaLabel(bool isNisa)
+    {
+        if (isNisa)
+        {
+            return "NISA預り";
+        }
+        else
+        {
+            return "一般預かり";
+        }
     }
 }

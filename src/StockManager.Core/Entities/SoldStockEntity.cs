@@ -35,5 +35,10 @@
         ///     売却による損益を取得または設定します。
         /// </summary>
         public int Profit { get; set; }
+
+        /// <summary>
+        ///     NISAかどうかを取得または設定します。
+        /// </summary>
+        public bool IsNisa { get; set; }
     }
 }

@@ -13,6 +13,12 @@
                     <MudDatePicker @bind-Date="Date" Label="日付" Required="true" RequiredError="※必須" />
                     <MudTextField T="int" @bind-Value="Data.Quantity" Label="口数" Required="true" RequiredError="※必須" />
                     <MudTextField T="int" @bind-Value="Data.Unit" Label="購入単位" Required="true" RequiredError="※必須" />
+                    <div class="d-flex">
+                        <MudRadioGroup @bind-SelectedOption="Data.IsNisa" T="bool" Required="true" RequiredError="Required!">
+                            <MudRadio Option="@true">NISA預かり</MudRadio>
+                            <MudRadio Option="@false">一般預かり</MudRadio>
+                        </MudRadioGroup>
+                    </div>
                     <MudTextField T="double" @bind-Value="Data.Amount" Label="分配金" Required="true" RequiredError="※必須" />
                 </MudForm>
             </MudItem>

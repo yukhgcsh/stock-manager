@@ -76,7 +76,7 @@ namespace StockManager.Core.Services
             }
             else if (stockTransaction.Type == TransactionType.Sell)
             {
-                await this._stockRepository.SellStockAsync(stockTransaction.Code, stockTransaction.Date, stockTransaction.Quantity, stockTransaction.Amount);
+                await this._stockRepository.SellStockAsync(stockTransaction.Code, stockTransaction.Date, stockTransaction.Quantity, stockTransaction.Amount, stockTransaction.IsNisa);
             }
 
             await transaction.CommitAsync();
