@@ -27,7 +27,7 @@
                     </div>
                     <MudDatePicker @bind-Date="Date" Label="取引日" Required="true" RequiredError="※必須" />
                     <MudTextField T="double" @bind-Value="Data.Amount" Label="価格" Required="true" RequiredError="※必須" />
-                    <MudTextField T="int" Label="手数料" Required="false" />
+                    <MudTextField T="int" @bind-Value="Data.Commission" Label="手数料" Required="false" />
                     <MudTextField T="string" @bind-Value="Data.Memo" Label="メモ" Required="false" />
                 </MudForm>
             </MudItem>

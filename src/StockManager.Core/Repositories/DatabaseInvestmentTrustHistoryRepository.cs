@@ -30,12 +30,12 @@ namespace StockManager.Core.Repositories
             using var command = this._connection.CreateCommand();
             if (period == null)
             {
-                command.CommandText = $"SELECT id, code, name, date, quantity, price, unit, type, is_nisa, memo FROM {this._option.CurrentValue.DatabaseName}.{Constants.InvestmentTrustHistoryTableName};";
+                command.CommandText = $"SELECT id, code, name, date, quantity, price, unit, type, is_nisa, commission, memo FROM {this._option.CurrentValue.DatabaseName}.{Constants.InvestmentTrustHistoryTableName};";
             }
             else
             {
                 var time = DateTime.Now - period;
-                command.CommandText = $"SELECT id, code, name, date, quantity, price, unit, type, is_nisa, memo FROM {this._option.CurrentValue.DatabaseName}.{Constants.InvestmentTrustHistoryTableName} WHERE date >= @time;";
+                command.CommandText = $"SELECT id, code, name, date, quantity, price, unit, type, is_nisa, commission, memo FROM {this._option.CurrentValue.DatabaseName}.{Constants.InvestmentTrustHistoryTableName} WHERE date >= @time;";
                 command.Parameters.Add(new MySqlParameter("@time", time));
             }
 
@@ -56,7 +56,8 @@ namespace StockManager.Core.Repositories
                             Unit = reader.GetInt32(6),
                             Type = (TransactionType)reader.GetByte(7),
                             IsNisa = reader.GetBoolean(8),
-                            Memo = reader.GetString(9)
+                            Commission = reader.GetInt32(9),
+                            Memo = reader.GetString(10)
                         }
                     );
                 }
@@ -69,7 +70,7 @@ namespace StockManager.Core.Repositories
         public async ValueTask RegisterAsync(InvestmentTrustHistoryEntity entity)
         {
             using var command = this._connection.CreateCommand();
-            command.CommandText = $"INSERT INTO {this._option.CurrentValue.DatabaseName}.{Constants.InvestmentTrustHistoryTableName} (code, name, date, quantity, price, unit, type, is_nisa, memo) VALUES (@code, @name, @date, @quantity, @price, @unit, @type, @is_nisa, @memo);";
+            command.CommandText = $"INSERT INTO {this._option.CurrentValue.DatabaseName}.{Constants.InvestmentTrustHistoryTableName} (code, name, date, quantity, price, unit, type, is_nisa, commission, memo) VALUES (@code, @name, @date, @quantity, @price, @unit, @type, @is_nisa, @commission, @memo);";
             command.Parameters.Add(new MySqlParameter("@code", entity.Code));
             command.Parameters.Add(new MySqlParameter("@name", entity.Name));
             command.Parameters.Add(new MySqlParameter("@date", entity.Date));
@@ -78,6 +79,7 @@ namespace StockManager.Core.Repositories
             command.Parameters.Add(new MySqlParameter("@unit", entity.Unit));
             command.Parameters.Add(new MySqlParameter("@type", entity.Type));
             command.Parameters.Add(new MySqlParameter("@is_nisa", entity.IsNisa));
+            command.Parameters.Add(new MySqlParameter("@commission", entity.Commission));
             command.Parameters.Add(new MySqlParameter("@memo", entity.Memo));
 
             await command.ExecuteNonQueryAsync();

@@ -48,5 +48,10 @@ namespace StockManager.Core.InputModels
         ///     NISAかどうかを取得または設定します。
         /// </summary>
         public bool IsNisa { get; set; }
+
+        /// <summary>
+        ///     手数料を取得または設定します。
+        /// </summary>
+        public int Commission { get; set; }
     }
 }

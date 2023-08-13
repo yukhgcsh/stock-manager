@@ -26,7 +26,7 @@
                             <MudRadio Option="@false">一般預かり</MudRadio>
                         </MudRadioGroup>
                     </div>
-                    <MudTextField T="int" Label="手数料" Required="false" />
+                    <MudTextField T="int" @bind-Value="Data.Commission" Label="手数料" Required="false" />
                     <MudTextField T="string" @bind-Value="Data.Memo" Label="メモ" Required="false" />
                 </MudForm>
             </MudItem>
