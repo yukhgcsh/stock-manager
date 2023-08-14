@@ -1,0 +1,84 @@
+﻿@using StockManager.Core.Services;
+
+@inject StockTransactionService service;
+
+<MudDialog>
+    <DialogContent>
+        <MudItem xs="12" sm="12">
+            <MudText>以下のヘッダーを持つCSVファイルをアップロードしてください。</MudText>
+            <MudTooltip Text="銘柄コード(4桁の数字)">
+                <MudText>code</MudText>
+            </MudTooltip>
+            ,
+            <MudTooltip Text="銘柄名">
+                <MudText>name</MudText>
+            </MudTooltip>
+            ,
+            <MudTooltip Text="取引種別(1:購入、2:売却、3:配当金)">
+                <MudText>type</MudText>
+            </MudTooltip>
+            ,
+            <MudTooltip Text="取引株数">
+                <MudText>quantity</MudText>
+            </MudTooltip>
+            ,
+            <MudTooltip Text="取引日">
+                <MudText>date</MudText>
+            </MudTooltip>
+            ,
+            <MudTooltip Text="価格(購入、売却の場合は1株あたりの単価、配当金の場合は所有株数での合計金額)">
+                <MudText>price</MudText>
+            </MudTooltip>
+            ,
+            <MudTooltip Text="預かり種別">
+                <MudText>is_nisa</MudText>
+            </MudTooltip>
+            ,
+            <MudTooltip Text="手数料/配当にかかる税金">
+                <MudText>commission</MudText>
+            </MudTooltip>
+            ,
+            <MudTooltip Text="メモ">
+                <MudText>Memo</MudText>
+            </MudTooltip>
+            <MudFileUpload T="IBrowserFile" FilesChanged="SetFile">
+                <ButtonTemplate>
+                    <MudButton HtmlTag="label" Variant="Variant.Filled" Color="Color.Success" StartIcon="@Icons.Material.Filled.Image" for="@context">CSV選択</MudButton>
+                </ButtonTemplate>
+            </MudFileUpload>
+            <MudTextField @bind-Value="FileName" Variant="Variant.Text" Disabled="true" />
+        </MudItem>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Close">閉じる</MudButton>
+        <MudButton OnClick="Import" Disabled="@(!IsValid)">登録</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; } = null!;
+
+    bool IsValid = false;
+    IBrowserFile? File = null;
+    string FileName = "未選択";
+
+    private void SetFile(IBrowserFile file)
+    {
+        File = file;
+        FileName = file.Name;
+        IsValid = true;
+    }
+
+    private void Close()
+    {
+        MudDialog.Close();
+    }
+
+    private async Task Import()
+    {
+        using var stream = File!.OpenReadStream();
+        await service.ImportAsync(stream);
+        MudDialog.Close(DialogResult.Ok(true));
+    }
+}

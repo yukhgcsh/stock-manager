@@ -5,7 +5,6 @@ using StockManager.Core.OutputModels;
 using StockManager.Core.Repositories;
 using StockManager.Core.Transactions;
 using StockManager.Core.Utils;
-using System.Reflection.Metadata.Ecma335;
 
 namespace StockManager.Core.Services
 {
@@ -77,6 +76,56 @@ namespace StockManager.Core.Services
             else if (stockTransaction.Type == TransactionType.Sell)
             {
                 await this._stockRepository.SellStockAsync(stockTransaction.Code, stockTransaction.Date, stockTransaction.Quantity, stockTransaction.Amount, stockTransaction.IsNisa);
+            }
+
+            await transaction.CommitAsync();
+        }
+
+        public async ValueTask ImportAsync(Stream stream)
+        {
+            await using var transaction = await this._tradesTransactionManager.BeginTransactionAsync();
+            using var reader = new StreamReader(stream);
+            var line = await reader.ReadLineAsync();
+            while (stream.CanRead)
+            {
+                line = await reader.ReadLineAsync();
+                if (line == null)
+                {
+                    break;
+                }
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+                var elements = line.Split(",").Select(x => x.Trim()).ToArray();
+                var historyEntity = new StockTransactionHistoryEntity
+                {
+                    Code = int.Parse(elements[0]),
+                    Type = (TransactionType)int.Parse(elements[2]),
+                    Date = DateTime.Parse(elements[3]),
+                    Quantity = int.Parse(elements[4]),
+                    Amount = double.Parse(elements[5]),
+                    IsNisa = bool.Parse(elements[6]),
+                    Commission = int.Parse(elements[7]),
+                    Memo = elements[8]
+                };
+                var codeEntity = new StockCodeEntity
+                {
+                    Code = historyEntity.Code,
+                    Name = elements[1]
+                };
+                await this._stockHistoryRepository.RegisterTransactionAsync(historyEntity);
+                await this._stockRepository.UpsertStockCodeAsync(codeEntity);
+
+                if (historyEntity.Type == TransactionType.Buy)
+                {
+                    var buyEntity = this._mapper.Map<StockTransactionHistoryEntity, HoldingStockEntity>(historyEntity);
+                    await this._stockRepository.BuyStockAsync(buyEntity);
+                }
+                else if (historyEntity.Type == TransactionType.Sell)
+                {
+                    await this._stockRepository.SellStockAsync(historyEntity.Code, historyEntity.Date, historyEntity.Quantity, historyEntity.Amount, historyEntity.IsNisa);
+                }
             }
 
             await transaction.CommitAsync();
