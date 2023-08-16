@@ -102,7 +102,7 @@ namespace StockManager.Core.Services
                     }
                     else
                     {
-                        dividendProfit += history.Amount;
+                        dividendProfit += history.Amount * history.Quantity;
                     }
                 }
                 trust.InvestmentTrustProfit = (int)trustProfit;

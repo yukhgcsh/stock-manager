@@ -91,7 +91,7 @@ namespace StockManager.Core.Repositories
                 Index = 7,
                 Code = 5432,
                 Date = new DateTime(2023, 3, 28),
-                Amount = 3000,
+                Amount = 15,
                 Memo = "-",
                 Quantity = 200,
                 Type = TransactionType.Dividend,

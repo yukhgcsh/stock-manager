@@ -50,7 +50,7 @@ namespace StockManager.Core.Repositories
                 Index = 4,
                 Code = 123456,
                 Name = "欲張り投資信託",
-                Amount = 3600,
+                Amount = 300,
                 Date = new DateTime(2022, 12, 25),
                 Quantity = 12,
                 Unit = 10_000,
