@@ -157,7 +157,7 @@ namespace StockManager.Core.Repositories
                         Code = code,
                         Quantity = transaction.Quantity,
                         BoughtDate = transaction.Date,
-                        Profit = (int)(transaction.Amount - amount) * transaction.Quantity,
+                        Profit = (int)(amount - transaction.Amount) * transaction.Quantity,
                         SoldDate = date,
                         IsNisa = isNisa
                     };
@@ -172,7 +172,7 @@ namespace StockManager.Core.Repositories
                         Code = code,
                         Quantity = restQuantity,
                         BoughtDate = transaction.Date,
-                        Profit = (int)(transaction.Amount - amount) * restQuantity,
+                        Profit = (int)(amount - transaction.Amount) * restQuantity,
                         SoldDate = date,
                         IsNisa = isNisa
                     };
