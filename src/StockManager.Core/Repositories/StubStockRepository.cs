@@ -138,7 +138,7 @@ namespace StockManager.Core.Repositories
         {
             if (!this._holdingStocks.TryGetValue(code, out var target))
             {
-                throw new InvalidOperationException("所有していない株を売却しています。");
+                throw new InvalidOperationException($"売却しようとしているコード({code})の株を所有していません。");
             }
 
 
@@ -180,6 +180,11 @@ namespace StockManager.Core.Repositories
                     transaction.Quantity -= restQuantity;
                     restQuantity = 0;
                 }
+            }
+
+            if(restQuantity != 0)
+            {
+                throw new InvalidOperationException($"売却しようとしているコード({code})の株を所有していません。");
             }
 
             return ValueTask.CompletedTask;

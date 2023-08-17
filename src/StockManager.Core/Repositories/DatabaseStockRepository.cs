@@ -117,7 +117,7 @@ namespace StockManager.Core.Repositories
         }
 
         /// <inheritdoc />
-        public async ValueTask SellStockAsync(int code, DateTime date, int quantity, double price, bool isNisa)
+        public async ValueTask SellStockAsync(int code, DateTime date, int quantity, double amount, bool isNisa)
         {
             var holdingStocks = await this.GetHoldingStocksAsync();
 
@@ -134,7 +134,7 @@ namespace StockManager.Core.Repositories
                     insertCommand.Parameters.Add(new MySqlParameter("@bought_date", holdingStock.Date));
                     insertCommand.Parameters.Add(new MySqlParameter("@sold_date", date));
                     insertCommand.Parameters.Add(new MySqlParameter("@quantity", quantity));
-                    insertCommand.Parameters.Add(new MySqlParameter("@profit", (price - holdingStock.Amount) * restQuantity));
+                    insertCommand.Parameters.Add(new MySqlParameter("@profit", (amount - holdingStock.Amount) * restQuantity));
                     insertCommand.Parameters.Add(new MySqlParameter("@is_nisa", isNisa));
                     await insertCommand.ExecuteNonQueryAsync();
                     break;
@@ -149,11 +149,16 @@ namespace StockManager.Core.Repositories
                     insertCommand.Parameters.Add(new MySqlParameter("@bought_date", holdingStock.Date));
                     insertCommand.Parameters.Add(new MySqlParameter("@sold_date", date));
                     insertCommand.Parameters.Add(new MySqlParameter("@quantity", quantity));
-                    insertCommand.Parameters.Add(new MySqlParameter("@profit", (price - holdingStock.Amount) * holdingStock.Quantity));
+                    insertCommand.Parameters.Add(new MySqlParameter("@profit", (amount - holdingStock.Amount) * holdingStock.Quantity));
                     insertCommand.Parameters.Add(new MySqlParameter("@is_nisa", isNisa));
                     await insertCommand.ExecuteNonQueryAsync();
                     restQuantity -= holdingStock.Quantity;
                 }
+            }
+
+            if (restQuantity != 0)
+            {
+                throw new InvalidOperationException($"売却しようとしているコード({code})の株を所有していません。");
             }
         }
 
