@@ -137,6 +137,7 @@ namespace StockManager.Core.Repositories
                     insertCommand.Parameters.Add(new MySqlParameter("@profit", (amount - holdingStock.Amount) * restQuantity));
                     insertCommand.Parameters.Add(new MySqlParameter("@is_nisa", isNisa));
                     await insertCommand.ExecuteNonQueryAsync();
+                    restQuantity = 0;
                     break;
                 }
                 else
@@ -144,7 +145,7 @@ namespace StockManager.Core.Repositories
                     using var insertCommand = new MySqlCommand();
                     insertCommand.Connection = this._connection;
 
-                    insertCommand.CommandText = $"INSERT INTO {this._option.CurrentValue.DatabaseName}.{Constants.SoldStockTableName} (code, bought_date, sold_date, quantity, profit) VALUES (@code, @bought_date, @sold_date, @quantity, @profit);";
+                    insertCommand.CommandText = $"INSERT INTO {this._option.CurrentValue.DatabaseName}.{Constants.SoldStockTableName} (code, bought_date, sold_date, quantity, profit, is_nisa) VALUES (@code, @bought_date, @sold_date, @quantity, @profit, @is_nisa);";
                     insertCommand.Parameters.Add(new MySqlParameter("@code", code));
                     insertCommand.Parameters.Add(new MySqlParameter("@bought_date", holdingStock.Date));
                     insertCommand.Parameters.Add(new MySqlParameter("@sold_date", date));
@@ -185,7 +186,7 @@ namespace StockManager.Core.Repositories
 
                 updateCommand.CommandText = $"UPDATE {this._option.CurrentValue.DatabaseName}.{Constants.StockCodeTableName} SET name = @name WHERE code = @code;";
                 updateCommand.Parameters.Add(new MySqlParameter("@code", stockCode.Code));
-                updateCommand.Parameters.Add(new MySqlParameter("@bane", stockCode.Name));
+                updateCommand.Parameters.Add(new MySqlParameter("@name", stockCode.Name));
                 await updateCommand.ExecuteNonQueryAsync();
             }
         }
