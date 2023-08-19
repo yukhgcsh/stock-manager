@@ -137,6 +137,29 @@ namespace StockManager.Core.Repositories
                     insertCommand.Parameters.Add(new MySqlParameter("@profit", (amount - holdingStock.Amount) * restQuantity));
                     insertCommand.Parameters.Add(new MySqlParameter("@is_nisa", isNisa));
                     await insertCommand.ExecuteNonQueryAsync();
+
+                    if (holdingStock.Quantity == restQuantity)
+                    {
+                        using var deleteCommand = new MySqlCommand();
+                        deleteCommand.Connection = this._connection;
+
+                        deleteCommand.CommandText = $"DELETE FROM {this._option.CurrentValue.DatabaseName}.{Constants.HoldingStockTableName} WHERE id=@id;";
+
+                        deleteCommand.Parameters.Add(new MySqlParameter("@id", holdingStock.Index));
+                        await deleteCommand.ExecuteNonQueryAsync();
+                    }
+                    else
+                    {
+                        using var updateCommand = new MySqlCommand();
+                        updateCommand.Connection = this._connection;
+
+                        updateCommand.CommandText = $"UPDATE {this._option.CurrentValue.DatabaseName}.{Constants.HoldingStockTableName} SET quantity=@quantity WHERE id=@id;";
+
+                        updateCommand.Parameters.Add(new MySqlParameter("@id", holdingStock.Index));
+                        updateCommand.Parameters.Add(new MySqlParameter("@quantity", holdingStock.Quantity - restQuantity));
+                        await updateCommand.ExecuteNonQueryAsync();
+                    }
+
                     restQuantity = 0;
                     break;
                 }
@@ -153,6 +176,14 @@ namespace StockManager.Core.Repositories
                     insertCommand.Parameters.Add(new MySqlParameter("@profit", (amount - holdingStock.Amount) * holdingStock.Quantity));
                     insertCommand.Parameters.Add(new MySqlParameter("@is_nisa", isNisa));
                     await insertCommand.ExecuteNonQueryAsync();
+
+                    using var deleteCommand = new MySqlCommand();
+                    deleteCommand.Connection = this._connection;
+
+                    deleteCommand.CommandText = $"DELETE FROM {this._option.CurrentValue.DatabaseName}.{Constants.HoldingStockTableName} WHERE id=@id;";
+                    deleteCommand.Parameters.Add(new MySqlParameter("@id", holdingStock.Index));
+                    await deleteCommand.ExecuteNonQueryAsync();
+                    
                     restQuantity -= holdingStock.Quantity;
                 }
             }
