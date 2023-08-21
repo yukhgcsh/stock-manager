@@ -44,7 +44,15 @@
     protected override async Task OnInitializedAsync()
     {
         this.Stocks = await stockService.GetStocksAsync();
-        await StockDataGrid.SetSortAsync("銘柄コード", SortDirection.Ascending, x => x.Code);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await StockDataGrid.SetSortAsync("銘柄コード", SortDirection.Ascending, x => x.Code);
+        }
+        await base.OnAfterRenderAsync(firstRender);
     }
 
     private async Task OpenTransactionRegister()

@@ -17,7 +17,7 @@
 <MudButton Class="mb-2" @onclick="OpenCsvImporter" Variant="Variant.Outlined" Color="Color.Info">
     CSV読み込み
 </MudButton>
-<MudDataGrid T="InvestmentTrustInfo" Items="@info" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
+<MudDataGrid @ref="DataGrid" T="InvestmentTrustInfo" Items="@info" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
     <ToolBarContent>
         <MudText Typo="Typo.h4">投資信託一覧</MudText>
     </ToolBarContent>
@@ -44,7 +44,15 @@
     protected override async Task OnInitializedAsync()
     {
         this.info = await service.GetInvestmentTrustAsync();
-        await DataGrid.SetSortAsync("投資信託コード", SortDirection.Ascending, x => x.Code);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await DataGrid.SetSortAsync("投資信託コード", SortDirection.Ascending, x => x.Code);
+        }
+        await base.OnAfterRenderAsync(firstRender);
     }
 
     private async Task OpenTransactionRegister()
