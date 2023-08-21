@@ -14,6 +14,9 @@
 <MudButton @onclick="OpenDividendRegister" Variant="Variant.Outlined" Color="Color.Info">
     分配金登録
 </MudButton>
+<MudButton Class="mb-2" @onclick="OpenCsvImporter" Variant="Variant.Outlined" Color="Color.Info">
+    CSV読み込み
+</MudButton>
 <MudDataGrid T="InvestmentTrustInfo" Items="@info" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
     <ToolBarContent>
         <MudText Typo="Typo.h4">投資信託一覧</MudText>
@@ -90,6 +93,21 @@
             }
         };
         dialogService.Show<InvestmentTrustHistoryDialog>($"{info.Name}({info.Code})", parameter, options);
+    }
+    
+    private async Task OpenCsvImporter()
+    {
+        var options = new DialogOptions
+            {
+                CloseOnEscapeKey = true,
+                FullWidth = true,
+                MaxWidth = MaxWidth.Medium
+            };
+        var result = await dialogService.Show<InvestmentTrustCsvDialog>("CSV読み込み", options).Result;
+        if (result.Data is bool boolResult && boolResult)
+        {
+            this.info = await service.GetInvestmentTrustAsync();
+        }
     }
 
     private string GetInvestmentTrustQuantityLabel(InvestmentTrustInfo info)

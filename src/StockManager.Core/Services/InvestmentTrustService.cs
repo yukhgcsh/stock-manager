@@ -138,6 +138,42 @@ namespace StockManager.Core.Services
                 .ToList();
         }
 
+        public async ValueTask ImportAsync(Stream stream)
+        {
+            await using var transaction = await this._transactionManager.BeginTransactionAsync();
+            using var reader = new StreamReader(stream);
+            var line = await reader.ReadLineAsync();
+            while (stream.CanRead)
+            {
+                line = await reader.ReadLineAsync();
+                if (line == null)
+                {
+                    break;
+                }
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    continue;
+                }
+                var elements = line.Split(",").Select(x => x.Trim()).ToArray();
+                var historyEntity = new InvestmentTrustHistoryEntity
+                {
+                    Code = int.Parse(elements[0]),
+                    Name = elements[1],
+                    Type = (TransactionType)int.Parse(elements[2]),
+                    Date = DateTime.Parse(elements[3]),
+                    Quantity = int.Parse(elements[4]),
+                    Unit = int.Parse(elements[5]),
+                    Amount = double.Parse(elements[6]),
+                    IsNisa = bool.Parse(elements[7]),
+                    Commission = int.Parse(elements[8]),
+                    Memo = elements[9]
+                };
+                await this._historyRepository.RegisterAsync(historyEntity);
+            }
+
+            await transaction.CommitAsync();
+        }
+
         /// <summary>
         ///     投資信託の取引履歴を登録します。
         /// </summary>
