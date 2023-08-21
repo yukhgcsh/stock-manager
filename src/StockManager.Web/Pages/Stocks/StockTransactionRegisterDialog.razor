@@ -3,6 +3,7 @@
 @using StockManager.Core.Utils;
 
 @inject StockTransactionService transactionService;
+@inject IDialogService dialogService;
 
 <MudDialog>
     <DialogContent>
@@ -49,9 +50,16 @@
 
     protected async Task Register()
     {
-        this.Data.Date = this.Date!.Value;
-        await transactionService.RegisterStockTransactionAsync(this.Data);
-        MudDialog.Close(DialogResult.Ok(true));
+        try
+        {
+            this.Data.Date = this.Date!.Value;
+            await transactionService.RegisterStockTransactionAsync(this.Data);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception)
+        {
+            await dialogService.ShowMessageBox("エラー", "登録でエラーが発生しました。もう一度実行してください。", yesText: "閉じる");
+        }
     }
 
     private void Close()

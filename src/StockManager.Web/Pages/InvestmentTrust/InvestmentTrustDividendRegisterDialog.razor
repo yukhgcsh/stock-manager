@@ -2,6 +2,7 @@
 @using StockManager.Core.Services;
 
 @inject InvestmentTrustService service;
+@inject IDialogService dialogService;
 
 <MudDialog>
     <DialogContent>
@@ -41,9 +42,16 @@
 
     private async Task Register()
     {
-        this.Data.Date = Date!.Value;
-        await service.RegisterDividendAsync(this.Data);
-        MudDialog.Close(DialogResult.Ok(true));
+        try
+        {
+            this.Data.Date = Date!.Value;
+            await service.RegisterDividendAsync(this.Data);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception)
+        {
+            await dialogService.ShowMessageBox("エラー", "登録でエラーが発生しました。もう一度実行してください。", yesText: "閉じる");
+        }
     }
 
     private void Close()

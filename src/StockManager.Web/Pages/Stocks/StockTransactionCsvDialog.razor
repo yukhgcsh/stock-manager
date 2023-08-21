@@ -1,6 +1,7 @@
 ﻿@using StockManager.Core.Services;
 
 @inject StockTransactionService service;
+@inject IDialogService dialogService;
 
 <MudDialog>
     <DialogContent>
@@ -77,8 +78,15 @@
 
     private async Task Import()
     {
-        using var stream = File!.OpenReadStream();
-        await service.ImportAsync(stream);
-        MudDialog.Close(DialogResult.Ok(true));
+        try
+        {
+            using var stream = File!.OpenReadStream();
+            await service.ImportAsync(stream);
+            MudDialog.Close(DialogResult.Ok(true));
+        }
+        catch (Exception)
+        {
+            await dialogService.ShowMessageBox("エラー", "登録でエラーが発生しました。もう一度実行してください。", yesText: "閉じる");
+        }
     }
 }
