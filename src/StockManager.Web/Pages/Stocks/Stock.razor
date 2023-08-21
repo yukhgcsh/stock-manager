@@ -17,15 +17,15 @@
 <MudButton Class="mb-2" @onclick="OpenCsvImporter" Variant="Variant.Outlined" Color="Color.Info">
     CSV読み込み
 </MudButton>
-<MudDataGrid Class="mb-2" T="StockInfo" Items="@Stocks" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
+<MudDataGrid Class="mb-2" @ref="StockDataGrid" T="StockInfo" Items="@Stocks" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
     <ToolBarContent>
         <MudText Typo="Typo.h4">証券一覧</MudText>
     </ToolBarContent>
     <Columns>
         <PropertyColumn Property="x => x!.Code" Filterable="false" Title="銘柄コード" />
         <PropertyColumn Property="x => x!.Name" Title="銘柄名" />
-        <PropertyColumn Property="x => GetStockQuantity(x!)" Title="保有株数"></PropertyColumn>
-        <PropertyColumn Property="x => GetProfit(x!)" Title="損益(株式/配当)" />
+        <PropertyColumn Property="x => GetStockQuantityLabel(x!)" Title="保有株数" SortBy="x => GetStockQuantity(x)"></PropertyColumn>
+        <PropertyColumn Property="x => GetProfit(x!)" Title="損益(株式/配当)" SortBy="x => x.StockProfit + x.DividendProfit" />
         <TemplateColumn>
             <CellTemplate>
                 <MudButton @onclick="() => OpenTransactionHistory(context.Item!)" Variant="Variant.Filled" Color="Color.Primary">
@@ -37,11 +37,14 @@
 </MudDataGrid>
 
 @code {
+    private MudDataGrid<StockInfo> StockDataGrid = null!;
+
     IList<StockInfo>? Stocks;
 
     protected override async Task OnInitializedAsync()
     {
         this.Stocks = await stockService.GetStocksAsync();
+        await StockDataGrid.SetSortAsync("銘柄コード", SortDirection.Ascending, x => x.Code);
     }
 
     private async Task OpenTransactionRegister()
@@ -107,9 +110,23 @@
         dialogService.Show<StockTransactionHistoryDialog>($"{info.Name}({info.Code})", parameter, options);
     }
 
-    private string GetStockQuantity(StockInfo info)
+    private string GetStockQuantityLabel(StockInfo info)
     {
-        var currentQuantity = info.Histories.Sum(x =>
+        var currentQuantity = this.GetStockQuantity(info);
+
+        if (currentQuantity != 0)
+        {
+            return $"{currentQuantity} 株保有";
+        }
+        else
+        {
+            return "全株売却済み";
+        }
+    }
+
+    private int GetStockQuantity(StockInfo info)
+    {
+        return info.Histories.Sum(x =>
             {
                 if (x.Type == TransactionType.Buy)
                 {
@@ -124,15 +141,6 @@
                     return 0;
                 }
             });
-
-        if (currentQuantity != 0)
-        {
-            return $"{currentQuantity} 株保有";
-        }
-        else
-        {
-            return "全株売却済み";
-        }
     }
 
     private string GetProfit(StockInfo info)

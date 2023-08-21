@@ -21,8 +21,8 @@
     <Columns>
         <PropertyColumn Property="x => x!.Code" Filterable="false" Title="投資信託コード" />
         <PropertyColumn Property="x => x!.Name" Title="投資信託名" />
-        <PropertyColumn Property="x => GetInvestmentTrustQuantity(x!)" Title="保有口数"></PropertyColumn>
-        <PropertyColumn Property="x => GetProfit(x!)" Title="損益(信託/分配金)" />
+        <PropertyColumn Property="x => GetInvestmentTrustQuantityLabel(x!)" Title="保有口数" SortBy="x => GetInvestmentTrustQuantity(x)"></PropertyColumn>
+        <PropertyColumn Property="x => GetProfit(x!)" Title="損益(信託/分配金)" SortBy="x => x.InvestmentTrustProfit + x.DividendProfit" />
         <TemplateColumn>
             <CellTemplate>
                 <MudButton @onclick="() => OpenTransactionHistory(context.Item!)" Variant="Variant.Filled" Color="Color.Primary">
@@ -34,11 +34,14 @@
 </MudDataGrid>
 
 @code {
+    private MudDataGrid<InvestmentTrustInfo> DataGrid = null!;
+
     IList<InvestmentTrustInfo>? info;
 
     protected override async Task OnInitializedAsync()
     {
         this.info = await service.GetInvestmentTrustAsync();
+        await DataGrid.SetSortAsync("投資信託コード", SortDirection.Ascending, x => x.Code);
     }
 
     private async Task OpenTransactionRegister()
@@ -89,9 +92,24 @@
         dialogService.Show<InvestmentTrustHistoryDialog>($"{info.Name}({info.Code})", parameter, options);
     }
 
-    private string GetInvestmentTrustQuantity(InvestmentTrustInfo info)
+    private string GetInvestmentTrustQuantityLabel(InvestmentTrustInfo info)
     {
-        var currentQuantity = info.Histories.Sum(x =>
+        var currentQuantity = this.GetInvestmentTrustQuantity(info);
+        var unit = info.Histories.OrderByDescending(x => x.Date).First().Unit;
+
+        if (currentQuantity != 0)
+        {
+            return $"{currentQuantity} 口保有(単位：{unit}口)";
+        }
+        else
+        {
+            return "全口売却済み";
+        }
+    }
+
+    private int GetInvestmentTrustQuantity(InvestmentTrustInfo info)
+    {
+        return info.Histories.Sum(x =>
             {
                 if (x.Type == TransactionType.Buy)
                 {
@@ -106,16 +124,6 @@
                     return 0;
                 }
             });
-        var unit = info.Histories.OrderByDescending(x => x.Date).First().Unit;
-
-        if (currentQuantity != 0)
-        {
-            return $"{currentQuantity} 口保有(単位：{unit}口)";
-        }
-        else
-        {
-            return "全口売却済み";
-        }
     }
 
     private string GetProfit(InvestmentTrustInfo info)

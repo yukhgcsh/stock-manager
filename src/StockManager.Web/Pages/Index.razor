@@ -51,7 +51,7 @@
     </MudCard>
 </MudStack>
 
-<MudDataGrid Class="mb-2" T="HoldingStock" Items="@HoldingStock" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
+<MudDataGrid Class="mb-2" @ref="HoldingStockDataGrid" T="HoldingStock" Items="@HoldingStock" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
     <ToolBarContent>
         <MudText Typo="Typo.h4">保有株式</MudText>
     </ToolBarContent>
@@ -65,7 +65,7 @@
     </Columns>
 </MudDataGrid>
 
-<MudDataGrid Class="mb-2" T="StockTransactionHistory" Items="@TransactionHistory" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
+<MudDataGrid Class="mb-2" @ref="HistoryDataGrid" T="StockTransactionHistory" Items="@TransactionHistory"  Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
     <ToolBarContent>
         <MudText Typo="Typo.h4">過去30日の取引</MudText>
     </ToolBarContent>
@@ -83,6 +83,9 @@
 </MudDataGrid>
 
 @code {
+    private MudDataGrid<HoldingStock> HoldingStockDataGrid = null!;
+    private MudDataGrid<StockTransactionHistory> HistoryDataGrid = null!;
+
     const string Buy = "購入";
     const string Sell = "売却";
     int Capital = 0;
@@ -96,6 +99,10 @@
         this.ProfitAndLoss = await dashboardService.GetProfitAndLossAsync().ConfigureAwait(false);
         this.HoldingStock = await dashboardService.GetHoldingStockAsync().ConfigureAwait(false);
         this.TransactionHistory = await dashboardService.FetchTransactionHistoryAsync(TimeSpan.FromDays(30)).ConfigureAwait(false);
+
+        await HoldingStockDataGrid.SetSortAsync("銘柄コード", SortDirection.Ascending, x => x.Code);
+        await HistoryDataGrid.SetSortAsync("銘柄コード", SortDirection.Descending, x => x.Date);
+
     }
 
     private string GetNisaLabel(bool isNisa)
