@@ -6,7 +6,7 @@
         <MudDataGrid T="StockInfo.History" Items="@StockInfo.Histories.OrderByDescending(x => x.Date)" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow" SortMode="SortMode.Single">
             <Columns>
                 <PropertyColumn Property="x => GetActionType(x.Type)" />
-                <PropertyColumn Property="x => x!.Date" Title="取引日" />
+                <PropertyColumn Property="x => x!.Date.ToShortDateString()" Title="取引日" />
                 <PropertyColumn Property="x => x!.Amount" Title="価格" />
                 <PropertyColumn Property="x => x!.Quantity" Title="数量" />
                 <PropertyColumn Property="x => GetNisaLabel(x!.IsNisa)" Title="預かり種別" />

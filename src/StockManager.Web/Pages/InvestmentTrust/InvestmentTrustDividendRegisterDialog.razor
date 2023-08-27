@@ -9,7 +9,7 @@
         <MudGrid>
             <MudItem xs="12" sm="12">
                 <MudForm Model="@Data" @ref="@Form" @bind-IsValid="@IsValid">
-                    <MudTextField T="int" @bind-Value="Data.Code" Label="投資信託コード" Required="true" RequiredError="※必須" />
+                    <MudTextField T="string" @bind-Value="Data.Code" Label="投資信託コード" Required="true" RequiredError="※必須" />
                     <MudTextField T="string" @bind-Value="Data.Name" Label="投資信託名" Required="true" RequiredError="※必須" />
                     <MudDatePicker @bind-Date="Date" Label="日付" Required="true" RequiredError="※必須" />
                     <MudTextField T="int" @bind-Value="Data.Quantity" Label="口数" Required="true" RequiredError="※必須" />

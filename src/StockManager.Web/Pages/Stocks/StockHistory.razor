@@ -15,7 +15,7 @@
         <PropertyColumn Property="x => GetTransactionType(x!.Type)" />
         <PropertyColumn Property="x => x!.Code" Filterable="false" Title="銘柄コード" />
         <PropertyColumn Property="x => x!.Name" Title="銘柄名" />
-        <PropertyColumn Property="x => x!.Date" Title="日付" />
+        <PropertyColumn Property="x => x!.Date.ToShortDateString()" Title="日付" />
         <PropertyColumn Property="x => x!.Quantity" Title="取引株数" />
         <PropertyColumn Property="x => GetNisaLabel(x!.IsNisa)" Title="預かり種別" />
         <PropertyColumn Property="x => x!.Amount" Title="取引単価/配当" />
