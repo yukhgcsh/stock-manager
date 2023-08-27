@@ -15,7 +15,7 @@
         <PropertyColumn Property="x => GetTransactionType(x!.Type)" />
         <PropertyColumn Property="x => x!.Code" Filterable="false" Title="投資信託コード" />
         <PropertyColumn Property="x => x!.Name" Title="投資信託名" />
-        <PropertyColumn Property="x => x!.Date.ToShortDateString()" Title="日付" />
+        <PropertyColumn Property="x => GetDateTimeString(x!.Date)" Title="日付" />
         <PropertyColumn Property="x => x!.Quantity" Title="取引口数" />
         <PropertyColumn Property="x => x!.Unit" Title="取引単位" />
         <PropertyColumn Property="x => GetNisaLabel(x!.IsNisa)" Title="預かり種別" />
@@ -61,4 +61,7 @@
             return "分配金";
         }
     }
+
+    private string GetDateTimeString(DateTime datetime)
+        => datetime.ToString("yyyy/MM/dd");
 }

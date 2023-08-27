@@ -6,7 +6,7 @@
         <MudDataGrid T="InvestmentTrustInfo.History" Items="@TrustInfo.Histories.OrderByDescending(x => x.Date)" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow" SortMode="SortMode.Single">
             <Columns>
                 <PropertyColumn Property="x => GetActionType(x.Type)" />
-                <PropertyColumn Property="x => x!.Date.ToShortDateString()" Title="取引日" />
+                <PropertyColumn Property="x => GetDateTimeString(x!.Date)" Title="取引日" />
                 <PropertyColumn Property="x => x!.Amount" Title="価格" />
                 <PropertyColumn Property="x => x!.Quantity" Title="口数" />
                 <PropertyColumn Property="x => x!.Unit" Title="購入単位" />
@@ -55,6 +55,9 @@
             return "一般預かり";
         }
     }
+
+    private string GetDateTimeString(DateTime datetime)
+        => datetime.ToString("yyyy/MM/dd");
 
     private void Close()
     {

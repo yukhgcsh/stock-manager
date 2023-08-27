@@ -61,7 +61,7 @@
         <PropertyColumn Property="x => x!.Quantity" Title="数" />
         <PropertyColumn Property="x => x!.Amount" Title="単価" />
         <PropertyColumn Property="x => GetNisaLabel(x!.IsNisa)" Title="預かり種別" />
-        <PropertyColumn Property="x => x!.Date.ToShortDateString()" Title="購入日" />
+        <PropertyColumn Property="x => GetDateTimeString(x!.Date)" Title="購入日" />
     </Columns>
 </MudDataGrid>
 
@@ -74,7 +74,7 @@
         <PropertyColumn Property="x => x!.Name" Title="銘柄名" />
         <PropertyColumn Property="x => x!.Quantity" Title="数" />
         <PropertyColumn Property="x => x!.Type == TransactionType.Buy ? Buy: Sell" Title="購入/売却" />
-        <PropertyColumn Property="x => x!.Date.ToShortDateString()" Title="取引日" />
+        <PropertyColumn Property="x => GetDateTimeString(x!.Date)" Title="取引日" />
         <PropertyColumn Property="x => x!.Amount" Title="価格" />
         <PropertyColumn Property="x => GetNisaLabel(x!.IsNisa)" Title="預かり種別" />
         <PropertyColumn Property="x => x!.Commission" Title="手数料" />
@@ -122,4 +122,7 @@
             return "一般預かり";
         }
     }
+
+    private string GetDateTimeString(DateTime datetime)
+        => datetime.ToString("yyyy/MM/dd");
 }
