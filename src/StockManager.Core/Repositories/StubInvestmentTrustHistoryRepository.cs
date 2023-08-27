@@ -9,7 +9,7 @@ namespace StockManager.Core.Repositories
             new InvestmentTrustHistoryEntity
             {
                 Index = 1,
-                Code = 123456,
+                Code = "12345678",
                 Name = "欲張り投資信託",
                 Amount = 9384,
                 Date = new DateTime(2022, 1, 12),
@@ -22,7 +22,7 @@ namespace StockManager.Core.Repositories
             new InvestmentTrustHistoryEntity
             {
                 Index = 2,
-                Code = 456789,
+                Code = "45678900",
                 Name = "元本割れしないように頑張る",
                 Amount = 10284,
                 Date = new DateTime(2022, 3, 20),
@@ -35,7 +35,7 @@ namespace StockManager.Core.Repositories
             new InvestmentTrustHistoryEntity
             {
                 Index = 3,
-                Code = 456789,
+                Code = "45678900",
                 Name = "元本割れしないように頑張る",
                 Amount = 15284,
                 Date = new DateTime(2023, 3, 30),
@@ -48,7 +48,7 @@ namespace StockManager.Core.Repositories
             new InvestmentTrustHistoryEntity
             {
                 Index = 4,
-                Code = 123456,
+                Code = "12345678",
                 Name = "欲張り投資信託",
                 Amount = 300,
                 Date = new DateTime(2022, 12, 25),

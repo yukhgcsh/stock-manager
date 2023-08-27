@@ -45,7 +45,7 @@ namespace StockManager.Core.Services
             await this._transactionManager.OpenAsync();
             var transactions = await this._historyRepository.FetchAsync();
 
-            var trustDictionary = new Dictionary<int, InvestmentTrustInfo>();
+            var trustDictionary = new Dictionary<string, InvestmentTrustInfo>();
             foreach (var transaction in transactions)
             {
                 if (!trustDictionary.TryGetValue(transaction.Code, out var trustInfo))
@@ -157,7 +157,7 @@ namespace StockManager.Core.Services
                 var elements = line.Split(",").Select(x => x.Trim()).ToArray();
                 var historyEntity = new InvestmentTrustHistoryEntity
                 {
-                    Code = int.Parse(elements[0]),
+                    Code = elements[0],
                     Name = elements[1],
                     Type = (TransactionType)int.Parse(elements[2]),
                     Date = DateTime.Parse(elements[3]),

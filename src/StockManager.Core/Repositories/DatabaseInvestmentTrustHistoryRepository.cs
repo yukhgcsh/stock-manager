@@ -48,7 +48,7 @@ namespace StockManager.Core.Repositories
                         new InvestmentTrustHistoryEntity
                         {
                             Index = reader.GetInt32(0),
-                            Code = reader.GetInt32(1),
+                            Code = reader.GetString(1),
                             Name = reader.GetString(2),
                             Date = reader.GetDateTime(3),
                             Quantity = reader.GetInt32(4),

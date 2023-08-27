@@ -10,7 +10,7 @@ namespace StockManager.Core.OutputModels
         /// <summary>
         ///     投資信託コードを取得または設定します。
         /// </summary>
-        public int Code { get; set; }
+        public string Code { get; set; } = null!;
 
         /// <summary>
         ///     投資信託名を取得または設定します。

@@ -14,7 +14,7 @@
 <MudButton Class="mb-2" @onclick="OpenDividendRegister" Variant="Variant.Outlined" Color="Color.Info">
     分配金登録
 </MudButton>
-<MudButton Class="mb-2"@onclick="OpenCsvImporter" Variant="Variant.Outlined" Color="Color.Info">
+<MudButton Class="mb-2" @onclick="OpenCsvImporter" Variant="Variant.Outlined" Color="Color.Info">
     CSV読み込み
 </MudButton>
 <MudDataGrid @ref="DataGrid" T="InvestmentTrustInfo" Items="@info" Filterable="false" FilterMode="@DataGridFilterMode.ColumnFilterRow">
