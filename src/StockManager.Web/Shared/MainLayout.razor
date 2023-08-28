@@ -1,4 +1,8 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.Extensions.Options;
+@using StockManager.Core.Options;
+
+@inherits LayoutComponentBase
+@inject IOptionsMonitor<VersionOptions> option
 
 <PageTitle>StockManager.Web</PageTitle>
 <MudThemeProvider />
@@ -12,7 +16,10 @@
 
     <main>
         <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            @if (option.CurrentValue.Version != null)
+            {
+                <MudText>Ver. @option.CurrentValue.Version</MudText>
+            }
         </div>
 
         <article class="content px-4">

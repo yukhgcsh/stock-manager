@@ -41,6 +41,7 @@ namespace StockManager.Web
             }
 
             builder.Services.Configure<DatabaseOptions>(builder.Configuration.GetSection(DatabaseOptions.OptionName));
+            builder.Services.Configure<VersionOptions>(builder.Configuration.GetSection(VersionOptions.OptionName));
 
             WebApplication app = builder.Build();
 
