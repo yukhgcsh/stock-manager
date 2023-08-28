@@ -12,7 +12,7 @@ namespace StockManager.Core.Repositories
                 Code = "12345678",
                 Name = "欲張り投資信託",
                 Amount = 9384,
-                Date = new DateTime(2022, 1, 12),
+                Date = DateTime.Now - TimeSpan.FromDays(25),
                 Quantity = 12,
                 Unit = 10_000,
                 Type = Utils.TransactionType.Buy,
@@ -25,7 +25,7 @@ namespace StockManager.Core.Repositories
                 Code = "45678900",
                 Name = "元本割れしないように頑張る",
                 Amount = 10284,
-                Date = new DateTime(2022, 3, 20),
+                Date = DateTime.Now - TimeSpan.FromDays(25),
                 Quantity = 9,
                 Unit = 1,
                 Type = Utils.TransactionType.Buy,
@@ -38,7 +38,7 @@ namespace StockManager.Core.Repositories
                 Code = "45678900",
                 Name = "元本割れしないように頑張る",
                 Amount = 15284,
-                Date = new DateTime(2023, 3, 30),
+                Date = DateTime.Now - TimeSpan.FromDays(2),
                 Quantity = 9,
                 Unit = 1,
                 Type = Utils.TransactionType.Sell,
@@ -51,7 +51,7 @@ namespace StockManager.Core.Repositories
                 Code = "12345678",
                 Name = "欲張り投資信託",
                 Amount = 300,
-                Date = new DateTime(2022, 12, 25),
+                Date = DateTime.Now - TimeSpan.FromDays(1),
                 Quantity = 12,
                 Unit = 10_000,
                 Type = Utils.TransactionType.Dividend,
@@ -66,7 +66,7 @@ namespace StockManager.Core.Repositories
             var now = DateTime.Now;
             if (period != null)
             {
-                return new ValueTask<IEnumerable<InvestmentTrustHistoryEntity>>(this._history.Where(x => now - x.Date < period));
+                return new ValueTask<IEnumerable<InvestmentTrustHistoryEntity>>(this._history.Where(x => (now - x.Date).Days <= period.Value.Days));
             }
             else
             {

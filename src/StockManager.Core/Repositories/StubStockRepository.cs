@@ -15,7 +15,7 @@ namespace StockManager.Core.Repositories
                     new HoldingStockEntity{
                         Quantity = 100,
                         Code = 1234,
-                        Date = new DateTime(2022, 1, 2),
+                        Date = DateTime.Now - TimeSpan.FromDays(100),
                         Amount = 1000,
                         IsNisa = true,
                     }
@@ -28,8 +28,8 @@ namespace StockManager.Core.Repositories
             {
                 Quantity = 100,
                 Code = 1234,
-                BoughtDate = new DateTime(2022, 1, 2),
-                SoldDate = new DateTime(2022, 1, 4),
+                BoughtDate = DateTime.Now - TimeSpan.FromDays(100),
+                SoldDate =  DateTime.Now - TimeSpan.FromDays(60),
                 Profit = 10000,
                 IsNisa = true
             },
@@ -37,8 +37,8 @@ namespace StockManager.Core.Repositories
             {
                 Quantity = 300,
                 Code = 5678,
-                BoughtDate = new DateTime(2022, 10, 1),
-                SoldDate = new DateTime(2022, 12, 3),
+                BoughtDate = DateTime.Now - TimeSpan.FromDays(30),
+                SoldDate = DateTime.Now - TimeSpan.FromDays(3),
                 Profit = 9000,
                 IsNisa = false
             },
@@ -46,8 +46,8 @@ namespace StockManager.Core.Repositories
             {
                 Quantity = 400,
                 Code = 9876,
-                BoughtDate = new DateTime(2022, 10, 1),
-                SoldDate = new DateTime(2023, 3, 3),
+                BoughtDate = DateTime.Now - TimeSpan.FromDays(30),
+                SoldDate = DateTime.Now - TimeSpan.FromDays(3),
                 Profit = -2000,
                 IsNisa = false
             },
@@ -55,8 +55,8 @@ namespace StockManager.Core.Repositories
             {
                 Quantity = 200,
                 Code = 5432,
-                BoughtDate = new DateTime(2022, 10, 1),
-                SoldDate = new DateTime(2023, 6, 27),
+                BoughtDate = DateTime.Now - TimeSpan.FromDays(30),
+                SoldDate = DateTime.Now - TimeSpan.FromDays(1),
                 Profit = 12000,
                 IsNisa = false
             }
@@ -182,7 +182,7 @@ namespace StockManager.Core.Repositories
                 }
             }
 
-            if(restQuantity != 0)
+            if (restQuantity != 0)
             {
                 throw new InvalidOperationException($"売却しようとしているコード({code})の株を所有していません。");
             }
