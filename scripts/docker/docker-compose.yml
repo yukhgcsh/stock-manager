@@ -18,8 +18,10 @@ services:
         - ./mysql/conf/my.cnf:/etc/mysql/conf.d/my.cnf
         - ./mysql/sql:/docker-entrypoint-initdb.d
   app:
-    image: stock-manager:1.0.0
+    image: stock-manager
     container_name: stock
+    build:
+      context: ./app
     restart: always
     ports:
         - 80:80
