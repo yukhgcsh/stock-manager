@@ -26,6 +26,7 @@ services:
         - 443:443
     environment: 
       Database__DatabaseName: ${DB_NAME}
+      ConnectionStrings__Database: Server=db;Port=3306;UserID=${DB_USER};Password=${DB_PASS};Database=${DB_NAME};IgnoreCommandTransaction=true;
 
 volumes:
   db-store:
